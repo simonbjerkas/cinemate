@@ -1,10 +1,15 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
-import ConvexClientProvider from "@/components/convex-client-provider";
-import { cn } from "@/lib/utils";
+
+import { Geist, Geist_Mono } from "next/font/google";
+
+import { Header } from "@/app/header";
+import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+
+import type { Metadata } from "next";
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+import { cn } from "@/lib/utils";
+import { Footer } from "./footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,11 +38,7 @@ export default function RootLayout({
     <ConvexAuthNextjsServerProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={cn(
-            geistSans.variable,
-            geistMono.variable,
-            "antialiased min-h-screen container mx-auto",
-          )}
+          className={cn(geistSans.variable, geistMono.variable, "antialiased")}
         >
           <ThemeProvider
             attribute="class"
@@ -45,7 +46,13 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <ConvexClientProvider>{children}</ConvexClientProvider>
+            <ConvexClientProvider>
+              <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-1 container mx-auto">{children}</main>
+                <Footer />
+              </div>
+            </ConvexClientProvider>
           </ThemeProvider>
         </body>
       </html>
