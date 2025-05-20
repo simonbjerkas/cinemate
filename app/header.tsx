@@ -13,13 +13,12 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
   NavigationMenu,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { SignOutButton } from "@/components/signout";
 import { SignInButton } from "@/components/signin";
+import { Button } from "@/components/ui/button";
 
 import { useConvexAuth, useQuery } from "convex/react";
 import Link from "next/link";
@@ -28,9 +27,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function Header() {
   return (
-    <header className="py-4 ">
-      <div className="container mx-auto flex flex-row justify-between items-center">
-        <h1>Cinemate</h1>
+    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <Link href="/" className="flex items-center space-x-2">
+          <span className="text-2xl font-bold text-primary">Cinemate</span>
+        </Link>
         <Navbar />
         <Profile />
       </div>
@@ -47,22 +48,33 @@ function Profile() {
       {isAuthenticated ? (
         user ? (
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Avatar>
-                <AvatarImage src={user.image} />
-                <AvatarFallback>
-                  {user.name
-                    ?.split(" ")
-                    .map((name) => name[0])
-                    .join("")}
-                </AvatarFallback>
-              </Avatar>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="relative h-10 w-10 rounded-full"
+              >
+                <Avatar>
+                  <AvatarImage src={user.image} />
+                  <AvatarFallback>
+                    {user.name
+                      ?.split(" ")
+                      .map((name) => name[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="end">
               <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link href="/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/lists">My Lists</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/watchlist">Watchlist</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <div className="my-2 flex justify-center">
@@ -71,7 +83,7 @@ function Profile() {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Skeleton className="size-10 rounded-full" />
+          <Skeleton className="h-10 w-10 rounded-full" />
         )
       ) : (
         <SignInButton />
@@ -79,57 +91,36 @@ function Profile() {
     </div>
   );
 }
+
 const LINKS = [
   {
-    label: "Home",
-    href: "/",
+    label: "Movies",
+    href: "/movies",
   },
   {
-    label: "About",
-    href: "/about",
+    label: "Lists",
+    href: "/lists",
+  },
+  {
+    label: "People",
+    href: "/people",
   },
 ];
 
 function Navbar() {
   return (
-    <nav className="flex flex-row justify-between items-center">
+    <nav className="flex items-center space-x-6">
       <NavigationMenu>
         <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                <li className="row-span-3">
-                  <NavigationMenuLink asChild>
-                    <Link
-                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                      href="/"
-                    >
-                      <div className="mb-2 mt-4 text-lg font-medium">
-                        shadcn/ui
-                      </div>
-                      <p className="text-sm leading-tight text-muted-foreground">
-                        Beautifully designed components that you can copy and
-                        paste into your apps. Accessible. Customizable. Open
-                        Source.
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-            <NavigationMenuContent></NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href="/docs" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Documentation
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
+          {LINKS.map((link) => (
+            <NavigationMenuItem key={link.href}>
+              <Link href={link.href} legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  {link.label}
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          ))}
         </NavigationMenuList>
       </NavigationMenu>
     </nav>
