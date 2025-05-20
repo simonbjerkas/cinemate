@@ -21,8 +21,10 @@ import {
 import { SignOutButton } from "@/components/signout";
 import { SignInButton } from "@/components/signin";
 
-import { useConvexAuth } from "convex/react";
+import { useConvexAuth, useQuery } from "convex/react";
 import Link from "next/link";
+import { api } from "@/convex/_generated/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function Header() {
   return (
@@ -38,27 +40,39 @@ export function Header() {
 
 function Profile() {
   const { isAuthenticated } = useConvexAuth();
+  const user = useQuery(api.users.getUser);
+
   return (
     <div>
       {isAuthenticated ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Name</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href="/profile">Profile</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <SignOutButton />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar>
+                <AvatarImage src={user.image} />
+                <AvatarFallback>
+                  {user.name
+                    ?.split(" ")
+                    .map((name) => name[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link href="/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="my-2 flex justify-center">
+                <SignOutButton />
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Skeleton className="size-10 rounded-full" />
+        )
       ) : (
         <SignInButton />
       )}
@@ -77,7 +91,6 @@ const LINKS = [
 ];
 
 function Navbar() {
-  const { isAuthenticated } = useConvexAuth();
   return (
     <nav className="flex flex-row justify-between items-center">
       <NavigationMenu>
@@ -119,7 +132,6 @@ function Navbar() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      {isAuthenticated && <SignOutButton />}
     </nav>
   );
 }
