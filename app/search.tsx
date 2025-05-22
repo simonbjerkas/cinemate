@@ -15,8 +15,10 @@ import { useDebouncedCallback } from "@/lib/hooks";
 import { searchMovies } from "@/lib/api";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Search() {
+  const router = useRouter();
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
@@ -36,6 +38,11 @@ export default function Search() {
       setIsSearching(false);
     }
   }, 500);
+
+  const handleSelect = (movieId: number) => {
+    router.push(`/movies/${movieId}`);
+    setOpen(false);
+  };
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -79,7 +86,16 @@ export default function Search() {
           {searchResults.length > 0 && (
             <CommandGroup>
               {searchResults.map((result) => (
-                <CommandItem key={result.id}>{result.title}</CommandItem>
+                <CommandItem
+                  key={result.id}
+                  onSelect={() => handleSelect(result.id)}
+                  className="flex justify-between"
+                >
+                  {result.title}
+                  <span className="text-xs">
+                    {result.release_date.split("-")[0]}
+                  </span>
+                </CommandItem>
               ))}
             </CommandGroup>
           )}
