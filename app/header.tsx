@@ -24,14 +24,18 @@ import { useConvexAuth, useQuery } from "convex/react";
 import Link from "next/link";
 import { api } from "@/convex/_generated/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import Search from "./search";
 
 export function Header() {
   return (
-    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
           <span className="text-2xl font-bold text-primary">Cinemate</span>
         </Link>
+        <div className="relative flex-1 max-w-xl mx-4">
+          <Search />
+        </div>
         <Navbar />
         <Profile />
       </div>

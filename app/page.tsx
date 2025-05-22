@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="px-4 py-8">
       {/* Hero Section */}
       <section className="relative mb-12 h-[60vh] overflow-hidden rounded-xl">
         <Image
