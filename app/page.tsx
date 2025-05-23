@@ -1,29 +1,43 @@
-import { dummyActivities, dummyMovies } from "@/lib/dummy-data";
-import { MovieCard } from "@/components/movie-card";
+"use client";
+
+import { getMovies } from "@/lib/api";
+import { Movie } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  useEffect(() => {
+    const fetchMovies = async () => {
+      const data = await getMovies();
+      setMovies(data.results);
+    };
+    fetchMovies();
+  }, []);
+  if (movies.length === 0) {
+    return <div>Loading...</div>;
+  }
   return (
     <main className="px-4 py-8">
       {/* Hero Section */}
       <section className="relative mb-12 h-[60vh] overflow-hidden rounded-xl">
         <Image
-          src={dummyMovies[0].backdropUrl}
-          alt={dummyMovies[0].title}
+          src={`https://image.tmdb.org/t/p/original/${movies[0].backdrop_path}`}
+          alt={movies[0].title}
           fill
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
           <div className="absolute bottom-0 left-0 right-0 p-8">
             <h1 className="mb-4 text-4xl font-bold text-white">
-              {dummyMovies[0].title}
+              {movies[0].title}
             </h1>
             <p className="mb-6 max-w-2xl text-lg text-gray-200">
-              {dummyMovies[0].description}
+              {movies[0].overview}
             </p>
             <Link
-              href={`/movies/${dummyMovies[0].id}`}
+              href={`/movies/${movies[0].id}`}
               className="inline-block rounded-lg bg-yellow-500 px-6 py-3 font-semibold text-black transition-colors hover:bg-yellow-400"
             >
               View Details
@@ -33,7 +47,7 @@ export default function Home() {
       </section>
 
       {/* Recent Activity */}
-      <section className="mb-12">
+      {/* <section className="mb-12">
         <h2 className="mb-6 text-2xl font-bold">Recent Activity</h2>
         <div className="space-y-4">
           {dummyActivities.map((activity) => (
@@ -61,17 +75,17 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Featured Movies */}
-      <section>
+      {/* <section>
         <h2 className="mb-6 text-2xl font-bold">Featured Movies</h2>
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {dummyMovies.map((movie) => (
+          {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
         </div>
-      </section>
+      </section> */}
     </main>
   );
 }

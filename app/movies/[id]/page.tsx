@@ -1,6 +1,10 @@
-import { dummyMovies, dummyReviews } from "@/lib/dummy-data";
+"use client";
+
+import { getMovieDetails } from "@/lib/api";
+import { MovieDetails } from "@/lib/types";
+
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface MoviePageProps {
   params: {
@@ -9,11 +13,18 @@ interface MoviePageProps {
 }
 
 export default function MoviePage({ params }: MoviePageProps) {
-  const movie = dummyMovies.find((m) => m.id === params.id);
-  const movieReviews = dummyReviews.filter((r) => r.movieId === params.id);
+  const { id } = params;
+  const [movie, setMovie] = useState<MovieDetails | null>(null);
+  useEffect(() => {
+    const fetchMovie = async () => {
+      const movie = await getMovieDetails(Number(id));
+      setMovie(movie);
+    };
+    fetchMovie();
+  }, [id]);
 
   if (!movie) {
-    notFound();
+    return <div>Loading...</div>;
   }
 
   return (
@@ -21,7 +32,7 @@ export default function MoviePage({ params }: MoviePageProps) {
       {/* Hero Section */}
       <div className="relative mb-8 h-[50vh] overflow-hidden rounded-xl">
         <Image
-          src={movie.backdropUrl}
+          src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
           alt={movie.title}
           fill
           className="object-cover"
@@ -31,7 +42,7 @@ export default function MoviePage({ params }: MoviePageProps) {
             <div className="flex items-end gap-8">
               <div className="relative h-48 w-32 flex-shrink-0 overflow-hidden rounded-lg">
                 <Image
-                  src={movie.posterUrl}
+                  src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
                   alt={movie.title}
                   fill
                   className="object-cover"
@@ -39,27 +50,8 @@ export default function MoviePage({ params }: MoviePageProps) {
               </div>
               <div>
                 <h1 className="mb-2 text-4xl font-bold text-white">
-                  {movie.title} ({movie.year})
+                  {movie.title} ({movie.release_date.split("-")[0]})
                 </h1>
-                <div className="mb-4 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500 text-lg font-bold text-black">
-                    {movie.rating.toFixed(1)}
-                  </div>
-                  <div className="text-gray-300">
-                    <p>{movie.director}</p>
-                    <p>{movie.runtime} min</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  {movie.genres.map((genre) => (
-                    <span
-                      key={genre}
-                      className="rounded-full bg-white/10 px-3 py-1 text-sm text-white"
-                    >
-                      {genre}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
@@ -71,29 +63,7 @@ export default function MoviePage({ params }: MoviePageProps) {
         <div className="md:col-span-2">
           <section className="mb-8">
             <h2 className="mb-4 text-2xl font-bold">Overview</h2>
-            <p className="text-gray-700">{movie.description}</p>
-          </section>
-
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Reviews</h2>
-            <div className="space-y-4">
-              {movieReviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
-                >
-                  <div className="mb-2 flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-sm font-bold text-black">
-                      {review.rating}
-                    </div>
-                    <span className="text-sm text-gray-500">
-                      {new Date(review.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="text-gray-700">{review.content}</p>
-                </div>
-              ))}
-            </div>
+            <p className="text-gray-700">{movie.overview}</p>
           </section>
         </div>
 

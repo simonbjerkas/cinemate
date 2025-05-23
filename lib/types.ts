@@ -19,47 +19,6 @@ export interface MovieSearchResponse {
   total_results: number;
 }
 
-export interface User {
-  id: string;
-  username: string;
-  avatarUrl: string;
-  bio: string;
-  watchlistCount: number;
-  watchedCount: number;
-  followersCount: number;
-  followingCount: number;
-}
-
-export interface Review {
-  id: string;
-  userId: string;
-  movieId: string;
-  rating: number;
-  content: string;
-  createdAt: string;
-  likes: number;
-}
-
-export interface List {
-  id: string;
-  userId: string;
-  title: string;
-  description: string;
-  movies: Movie[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Activity {
-  id: string;
-  userId: string;
-  type: "review" | "list" | "watchlist" | "rating";
-  content: string;
-  createdAt: string;
-  movieId?: string;
-  listId?: string;
-}
-
 export interface MovieDetails extends Movie {
   budget: number;
   genres: {
@@ -87,4 +46,32 @@ export interface MovieDetails extends Movie {
   }[];
   status: string;
   tagline: string | null;
+}
+
+export interface MovieCredits {
+  id: number;
+  cast: CastMember[];
+  crew: CrewMember[];
+}
+
+export interface MoviePerson {
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string | null;
+  credit_id: string;
+}
+
+export interface CastMember extends MoviePerson {
+  cast_id: number;
+  character: string;
+  order: number;
+}
+
+export interface CrewMember extends MoviePerson {
+  department: string;
+  job: string;
 }

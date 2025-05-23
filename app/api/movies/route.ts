@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { MovieDetails, MovieSearchResponse } from "@/lib/types";
+import { MovieCredits, MovieDetails, MovieSearchResponse } from "@/lib/types";
 
 const url = "https://api.themoviedb.org/3";
 const options = {
@@ -14,6 +14,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("query");
   const id = searchParams.get("id");
+  const credits = searchParams.get("credits");
+  const popular = searchParams.get("popular");
 
   if (!process.env.TMDB_API_KEY) {
     return NextResponse.json(
@@ -34,6 +36,26 @@ export async function GET(request: Request) {
       // Search movies
       const res = await fetch(
         `${url}/search/movie?query=${query}&include_adult=false&language=en-US&page=1`,
+        options,
+      );
+      const data = await res.json();
+      return NextResponse.json(data as MovieSearchResponse);
+    }
+
+    if (credits) {
+      // Get movie credits
+      const res = await fetch(
+        `${url}/movie/${id}/credits?language=en-US`,
+        options,
+      );
+      const data = await res.json();
+      return NextResponse.json(data as MovieCredits);
+    }
+
+    if (popular) {
+      // Get popular movies
+      const res = await fetch(
+        `${url}/movie/popular?language=en-US&page=1`,
         options,
       );
       const data = await res.json();

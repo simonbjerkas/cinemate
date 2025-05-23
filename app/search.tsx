@@ -10,33 +10,30 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 
-import { Movie } from "@/lib/types";
 import { useDebouncedCallback } from "@/lib/hooks";
 import { searchMovies } from "@/lib/api";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Search() {
   const router = useRouter();
-  const [searchResults, setSearchResults] = useState<Movie[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const debouncedSearch = useDebouncedCallback(async (searchQuery) => {
+  const { isFetching, isFetched, data } = useQuery({
+    queryKey: ["search", searchQuery],
+    queryFn: () =>
+      searchMovies(searchQuery).then(({ results }) => {
+        return results.sort((a, b) => b.popularity - a.popularity).slice(0, 5);
+      }),
+    enabled: searchQuery.length > 2,
+  });
+
+  const debouncedSearch = useDebouncedCallback((searchQuery) => {
     if (typeof searchQuery !== "string") return;
-    if (searchQuery.length < 3) return;
-    setIsSearching(true);
-    try {
-      const { results } = await searchMovies(searchQuery);
-      results.sort((a, b) => b.popularity - a.popularity);
-      setSearchResults(results.slice(0, 5));
-    } catch (error) {
-      console.error("Search failed:", error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
+    setSearchQuery(searchQuery);
   }, 500);
 
   const handleSelect = (movieId: number) => {
@@ -75,17 +72,19 @@ export default function Search() {
         />
         <CommandList>
           <CommandEmpty>
-            {isSearching ? (
+            {isFetching ? (
               <div className="flex items-center justify-center py-6">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
-            ) : (
+            ) : isFetched ? (
               "No results found."
+            ) : (
+              "Search for a movie..."
             )}
           </CommandEmpty>
-          {searchResults.length > 0 && (
-            <CommandGroup>
-              {searchResults.map((result) => (
+          {data && (
+            <CommandGroup key={searchQuery}>
+              {data.map((result) => (
                 <CommandItem
                   key={result.id}
                   onSelect={() => handleSelect(result.id)}
