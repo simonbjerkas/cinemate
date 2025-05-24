@@ -4,16 +4,16 @@ import { getMovieDetails } from "@/lib/api";
 import { MovieDetails } from "@/lib/types";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 interface MoviePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function MoviePage({ params }: MoviePageProps) {
-  const { id } = params;
+  const { id } = use(params);
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   useEffect(() => {
     const fetchMovie = async () => {

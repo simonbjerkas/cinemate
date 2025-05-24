@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 
-import { useDebounce } from "@/lib/hooks";
+import { useDebounce } from "@/hooks/debounce";
 import { searchMovies } from "@/lib/api";
 
 import { useState, useEffect } from "react";
