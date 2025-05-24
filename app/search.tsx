@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 
-import { useDebouncedCallback } from "@/lib/hooks";
+import { useDebounce } from "@/lib/hooks";
 import { searchMovies } from "@/lib/api";
 
 import { useState, useEffect } from "react";
@@ -22,19 +22,22 @@ export default function Search() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { isFetching, isFetched, data } = useQuery({
-    queryKey: ["search", searchQuery],
-    queryFn: () =>
-      searchMovies(searchQuery).then(({ results }) => {
-        return results.sort((a, b) => b.popularity - a.popularity).slice(0, 5);
-      }),
-    enabled: searchQuery.length > 2,
-  });
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  const debouncedSearch = useDebouncedCallback((searchQuery) => {
-    if (typeof searchQuery !== "string") return;
-    setSearchQuery(searchQuery);
-  }, 500);
+  const { isFetching, isFetched, data } = useQuery({
+    queryKey: ["search", debouncedSearchQuery],
+    queryFn: async () => {
+      if (debouncedSearchQuery.trim().length < 2) return [];
+      const movies = await searchMovies(debouncedSearchQuery);
+      const sortedMovies = movies.results.sort(
+        (a, b) => b.popularity - a.popularity,
+      );
+      const slicedMovies = sortedMovies.slice(0, 5);
+      console.log(slicedMovies);
+      return slicedMovies;
+    },
+    enabled: searchQuery.trim().length > 2,
+  });
 
   const handleSelect = (movieId: number) => {
     router.push(`/movies/${movieId}`);
@@ -53,6 +56,15 @@ export default function Search() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
+  const showLoading = isFetching && debouncedSearchQuery.length >= 2;
+  const showNoResults =
+    isFetched &&
+    debouncedSearchQuery.length >= 2 &&
+    (!data || data.length === 0) &&
+    !isFetching;
+  const showResults = data && data.length > 0 && !isFetching;
+  const showInitialMessage = debouncedSearchQuery.length < 2;
+
   return (
     <>
       <Button
@@ -65,25 +77,33 @@ export default function Search() {
           <span className="text-xs">⌘</span>J
         </kbd>
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        commandProps={{ shouldFilter: false }}
+      >
         <CommandInput
           placeholder="Search movies..."
-          onValueChange={debouncedSearch}
+          value={searchQuery}
+          onValueChange={setSearchQuery}
         />
         <CommandList>
-          <CommandEmpty>
-            {isFetching ? (
+          {showLoading && (
+            <CommandEmpty>
               <div className="flex items-center justify-center py-6">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
-            ) : isFetched ? (
-              "No results found."
-            ) : (
-              "Search for a movie..."
-            )}
-          </CommandEmpty>
-          {data && (
-            <CommandGroup key={searchQuery}>
+            </CommandEmpty>
+          )}
+
+          {showNoResults && <CommandEmpty>No results found.</CommandEmpty>}
+
+          {showInitialMessage && (
+            <CommandEmpty>Search for a movie...</CommandEmpty>
+          )}
+
+          {showResults && (
+            <CommandGroup heading="Movies">
               {data.map((result) => (
                 <CommandItem
                   key={result.id}
