@@ -1,5 +1,6 @@
 'use client';
 
+import { HomeSkeleton } from '@/components/skeletons/home';
 import { getMovies } from '@/lib/api';
 import { Movie } from '@/lib/types';
 import Image from 'next/image';
@@ -16,10 +17,10 @@ export default function Home() {
     fetchMovies();
   }, []);
   if (movies.length === 0) {
-    return <div>Loading...</div>;
+    return <HomeSkeleton />;
   }
   return (
-    <main className="px-4 py-8">
+    <div className="py-8">
       {/* Hero Section */}
       <section className="relative mb-12 h-[60vh] overflow-hidden rounded-xl">
         <Image
@@ -82,6 +83,6 @@ export default function Home() {
           ))}
         </div>
       </section> */}
-    </main>
+    </div>
   );
 }

@@ -54,11 +54,6 @@ export default function Search() {
     return () => document.removeEventListener('keydown', down);
   }, []);
 
-  const showLoading = isFetching && debouncedSearchQuery.length >= 2;
-  const showNoResults = isFetched && debouncedSearchQuery.length >= 2 && (!data || data.length === 0) && !isFetching;
-  const showResults = data && data.length > 0 && !isFetching;
-  const showInitialMessage = debouncedSearchQuery.length < 2;
-
   return (
     <>
       <Button
@@ -74,19 +69,19 @@ export default function Search() {
       <CommandDialog open={open} onOpenChange={setOpen} commandProps={{ shouldFilter: false }}>
         <CommandInput placeholder="Search movies..." value={searchQuery} onValueChange={setSearchQuery} />
         <CommandList>
-          {showLoading && (
-            <CommandEmpty>
+          <CommandEmpty>
+            {isFetching ? (
               <div className="flex items-center justify-center py-6">
                 <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
               </div>
-            </CommandEmpty>
-          )}
+            ) : isFetched ? (
+              'No results found.'
+            ) : (
+              'Search for a movie...'
+            )}
+          </CommandEmpty>
 
-          {showNoResults && <CommandEmpty>No results found.</CommandEmpty>}
-
-          {showInitialMessage && <CommandEmpty>Search for a movie...</CommandEmpty>}
-
-          {showResults && (
+          {data && data.length > 0 && !isFetching && (
             <CommandGroup heading="Movies">
               {data.map(result => (
                 <CommandItem key={result.id} onSelect={() => handleSelect(result.id)} className="flex justify-between">

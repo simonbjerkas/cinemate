@@ -9,20 +9,18 @@ export default function SignIn() {
   const { signIn } = useAuthActions();
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Sign in</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button variant="outline" onClick={() => signIn('google')} className="w-full">
-            <GoogleIcon className="size-4" />
-            Sign in with Google
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="mx-auto mt-10 w-full max-w-sm">
+      <CardHeader>
+        <CardTitle>Sign in</CardTitle>
+        <CardDescription>Sign in to your account</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Button variant="outline" onClick={() => signIn('google')} className="w-full">
+          <GoogleIcon className="size-4" />
+          Sign in with Google
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
 

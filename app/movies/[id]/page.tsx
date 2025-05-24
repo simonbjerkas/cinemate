@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MovieSkeleton } from '@/components/skeletons/movie';
 import { getMovieDetails } from '@/lib/api';
 import { MovieDetails } from '@/lib/types';
 
@@ -26,7 +27,7 @@ export default function MoviePage({ params }: MoviePageProps) {
   }, [id]);
 
   if (!movie) {
-    return <div>Loading...</div>;
+    return <MovieSkeleton />;
   }
 
   return (
