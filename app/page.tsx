@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { getMovies } from "@/lib/api";
-import { Movie } from "@/lib/types";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { getMovies } from '@/lib/api';
+import { Movie } from '@/lib/types';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -29,13 +29,9 @@ export default function Home() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-          <div className="absolute bottom-0 left-0 right-0 p-8">
-            <h1 className="mb-4 text-4xl font-bold text-white">
-              {movies[0].title}
-            </h1>
-            <p className="mb-6 max-w-2xl text-lg text-gray-200">
-              {movies[0].overview}
-            </p>
+          <div className="absolute right-0 bottom-0 left-0 p-8">
+            <h1 className="mb-4 text-4xl font-bold text-white">{movies[0].title}</h1>
+            <p className="mb-6 max-w-2xl text-lg text-gray-200">{movies[0].overview}</p>
             <Link
               href={`/movies/${movies[0].id}`}
               className="inline-block rounded-lg bg-yellow-500 px-6 py-3 font-semibold text-black transition-colors hover:bg-yellow-400"

@@ -1,32 +1,22 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useAuthActions } from "@convex-dev/auth/react";
+import { useAuthActions } from '@convex-dev/auth/react';
 
 export default function SignIn() {
   const { signIn } = useAuthActions();
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex h-screen flex-col items-center justify-center">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Sign in</CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button
-            variant="outline"
-            onClick={() => signIn("google")}
-            className="w-full"
-          >
+          <Button variant="outline" onClick={() => signIn('google')} className="w-full">
             <GoogleIcon className="size-4" />
             Sign in with Google
           </Button>
@@ -36,15 +26,9 @@ export default function SignIn() {
   );
 }
 
-function GoogleIcon(props: React.ComponentPropsWithoutRef<"svg">) {
+function GoogleIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      height="24"
-      viewBox="0 0 24 24"
-      width="24"
-    >
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
         fill="#4285F4"

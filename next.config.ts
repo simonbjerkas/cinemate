@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   eslint: { ignoreDuringBuilds: true },
@@ -6,10 +6,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "image.tmdb.org",
+        hostname: 'image.tmdb.org',
       },
       {
-        hostname: "i.pravatar.cc",
+        hostname: 'i.pravatar.cc',
       },
     ],
   },

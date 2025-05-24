@@ -1,31 +1,31 @@
-import "./globals.css";
+import './globals.css';
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from 'next/font/google';
 
-import { Header } from "./header";
-import { Footer } from "./footer";
-import { Providers } from "./providers";
+import { Header } from './header';
+import { Footer } from './footer';
+import { Providers } from './providers';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-import type { Metadata } from "next";
-import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+import type { Metadata } from 'next';
+import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Cinemate",
-  description: "Cinemate is a platform for discovering and sharing movies",
+  title: 'Cinemate',
+  description: 'Cinemate is a platform for discovering and sharing movies',
   icons: {
-    icon: "/convex.svg",
+    icon: '/convex.svg',
   },
 };
 
@@ -37,13 +37,11 @@ export default function RootLayout({
   return (
     <ConvexAuthNextjsServerProvider>
       <html lang="en" suppressHydrationWarning>
-        <body
-          className={cn(geistSans.variable, geistMono.variable, "antialiased")}
-        >
+        <body className={cn(geistSans.variable, geistMono.variable, 'antialiased')}>
           <Providers>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex min-h-screen flex-col">
               <Header />
-              <main className="flex-1 container mx-auto">{children}</main>
+              <main className="container mx-auto flex-1">{children}</main>
               <Footer />
             </div>
           </Providers>

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Button } from "./ui/button";
+import { Button } from './ui/button';
 
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useConvexAuth } from "convex/react";
-import { redirect } from "next/navigation";
+import { useAuthActions } from '@convex-dev/auth/react';
+import { useConvexAuth } from 'convex/react';
+import { redirect } from 'next/navigation';
 
 export function SignOutButton() {
   const { isAuthenticated } = useConvexAuth();
@@ -16,7 +16,7 @@ export function SignOutButton() {
           variant="outline"
           onClick={() =>
             void signOut().then(() => {
-              redirect("/signin");
+              redirect('/signin');
             })
           }
         >

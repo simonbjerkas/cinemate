@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,32 +8,32 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenu,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { SignOutButton } from "@/components/signout";
-import { SignInButton } from "@/components/signin";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/navigation-menu';
+import { SignOutButton } from '@/components/signout';
+import { SignInButton } from '@/components/signin';
+import { Button } from '@/components/ui/button';
 
-import { useConvexAuth, useQuery } from "convex/react";
-import Link from "next/link";
-import { api } from "@/convex/_generated/api";
-import { Skeleton } from "@/components/ui/skeleton";
-import Search from "./search";
+import { useConvexAuth, useQuery } from 'convex/react';
+import Link from 'next/link';
+import { api } from '@/convex/_generated/api';
+import { Skeleton } from '@/components/ui/skeleton';
+import Search from './search';
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-2xl font-bold text-primary">Cinemate</span>
+          <span className="text-primary text-2xl font-bold">Cinemate</span>
         </Link>
-        <div className="relative flex-1 max-w-xl mx-4">
+        <div className="relative mx-4 max-w-xl flex-1">
           <Search />
         </div>
         <Navbar />
@@ -53,17 +53,14 @@ function Profile() {
         user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="relative h-10 w-10 rounded-full"
-              >
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                 <Avatar>
                   <AvatarImage src={user.image} />
                   <AvatarFallback>
                     {user.name
-                      ?.split(" ")
-                      .map((name) => name[0])
-                      .join("")}
+                      ?.split(' ')
+                      .map(name => name[0])
+                      .join('')}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -98,16 +95,16 @@ function Profile() {
 
 const LINKS = [
   {
-    label: "Movies",
-    href: "/movies",
+    label: 'Movies',
+    href: '/movies',
   },
   {
-    label: "Lists",
-    href: "/lists",
+    label: 'Lists',
+    href: '/lists',
   },
   {
-    label: "People",
-    href: "/people",
+    label: 'People',
+    href: '/people',
   },
 ];
 
@@ -116,12 +113,10 @@ function Navbar() {
     <nav className="flex items-center space-x-6">
       <NavigationMenu>
         <NavigationMenuList>
-          {LINKS.map((link) => (
+          {LINKS.map(link => (
             <NavigationMenuItem key={link.href}>
               <Link href={link.href} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  {link.label}
-                </NavigationMenuLink>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>{link.label}</NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
           ))}
