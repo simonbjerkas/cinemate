@@ -9,6 +9,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Button } from '@/components/ui/button';
+import { Tmdb } from '@/components/tmdb';
 
 import { useDebounce } from '@/hooks/debounce';
 import { searchMovies } from '@/lib/api';
@@ -77,7 +78,10 @@ export default function Search() {
             ) : isFetched ? (
               'No results found.'
             ) : (
-              'Search for a movie...'
+              <div className="flex flex-col items-center justify-center gap-2">
+                <p className="text-sm">Movie search powered by</p>
+                <Tmdb className="w-32" />
+              </div>
             )}
           </CommandEmpty>
 
