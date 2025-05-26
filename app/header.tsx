@@ -19,27 +19,37 @@ import {
 import { SignOutButton } from '@/components/signout';
 import { SignInButton } from '@/components/signin';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Search } from './search';
 
+import { X as CrossIcon, Menu as HamburgerMenuIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+import { useScreen } from '@/hooks/screen';
+import { useEffect, useState } from 'react';
+
+import { api } from '@/convex/_generated/api';
 import { useConvexAuth, useQuery } from 'convex/react';
 import Link from 'next/link';
-import { api } from '@/convex/_generated/api';
-import { Skeleton } from '@/components/ui/skeleton';
-import Search from './search';
 
 export function Header() {
+  const { isMobile } = useScreen();
   return (
-    <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-primary text-2xl font-bold">Cinemate</span>
-        </Link>
-        <div className="relative mx-4 max-w-xl flex-1">
-          <Search />
+    <>
+      <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="text-primary text-2xl font-bold">Cinemate</span>
+          </Link>
+          <div className="relative mx-4 max-w-xl flex-1">
+            <Search />
+          </div>
+          <Navbar />
+          <Profile />
         </div>
-        <Navbar />
-        <Profile />
-      </div>
-    </header>
+      </header>
+      {isMobile && <MobileNavbar />}
+    </>
   );
 }
 
@@ -53,7 +63,7 @@ function Profile() {
         user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+              <Button variant="ghost" size="icon">
                 <Avatar>
                   <AvatarImage src={user.image} />
                   <AvatarFallback>
@@ -84,7 +94,7 @@ function Profile() {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton className="size-9 rounded-full" />
         )
       ) : (
         <SignInButton />
@@ -109,19 +119,80 @@ const LINKS = [
 ];
 
 function Navbar() {
+  const { isMobile } = useScreen();
   return (
-    <nav className="flex items-center space-x-6">
-      <NavigationMenu>
-        <NavigationMenuList>
-          {LINKS.map(link => (
-            <NavigationMenuItem key={link.href}>
-              <Link href={link.href} legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>{link.label}</NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-          ))}
-        </NavigationMenuList>
-      </NavigationMenu>
-    </nav>
+    <div className="hidden md:block">
+      {!isMobile && (
+        <nav className="flex items-center space-x-6">
+          <NavigationMenu>
+            <NavigationMenuList>
+              {LINKS.map(link => (
+                <NavigationMenuItem key={link.href}>
+                  <Link href={link.href} legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>{link.label}</NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
+        </nav>
+      )}
+    </div>
+  );
+}
+
+function MobileNavbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [isOpen]);
+
+  return (
+    <>
+      <Button
+        className="fixed right-4 bottom-4 z-[100] rounded-full shadow-lg"
+        variant="default"
+        size="icon"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="relative block size-4">
+          <CrossIcon
+            className={cn('absolute inset-0 transition-opacity duration-200', isOpen ? 'opacity-100' : 'opacity-0')}
+          />
+          <HamburgerMenuIcon
+            className={cn('absolute inset-0 transition-opacity duration-200', isOpen ? 'opacity-0' : 'opacity-100')}
+          />
+        </span>
+      </Button>
+      <div
+        className={cn(
+          'from-background/0 via-background/30 to-background/80 fixed inset-0 z-50 bg-gradient-to-b backdrop-blur-3xl',
+          'transition-all duration-300',
+          isOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0',
+        )}
+      >
+        {isOpen && (
+          <NavigationMenu className="mr-12 flex h-screen w-full flex-col">
+            <div className="flex-1" />
+            <NavigationMenuList className="mb-28 flex w-full flex-col gap-4">
+              {LINKS.map(link => (
+                <NavigationMenuItem key={link.href} className="w-80">
+                  <Link href={link.href} legacyBehavior passHref className="w-full">
+                    <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), 'w-full')}>
+                      {link.label}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
+        )}
+      </div>
+    </>
   );
 }

@@ -27,11 +27,13 @@ export default function Home() {
   return (
     <div className="py-8">
       {/* Hero Section */}
-      <section className="relative mb-12 h-[60vh] overflow-hidden rounded-xl">
+      <section className="relative container mx-auto mb-12 h-[60vh] overflow-hidden rounded-xl">
         <Image
           src={`https://image.tmdb.org/t/p/original/${movies[0].backdrop_path}`}
           alt={movies[0].title}
           fill
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">

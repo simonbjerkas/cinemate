@@ -12,6 +12,7 @@ export function MovieCard({ movie }: { movie: Movie }) {
         src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
         alt={movie.title}
         fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="object-cover"
       />
 
