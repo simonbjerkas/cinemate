@@ -97,7 +97,9 @@ function Profile() {
           <Skeleton className="size-9 rounded-full" />
         )
       ) : (
-        <SignInButton />
+        <div className="ml-2">
+          <SignInButton />
+        </div>
       )}
     </div>
   );
