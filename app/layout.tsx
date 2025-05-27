@@ -41,13 +41,9 @@ export default function RootLayout({
           <Providers>
             <div className="flex min-h-screen flex-col">
               <Header />
-              <div className="relative flex-1">
-                <div className="from-background via-background/95 to-background/90 absolute inset-0 -z-10 bg-gradient-to-b">
-                  <div className="bg-primary/15 absolute -top-1/4 -left-1/4 h-[55%] w-[55%] rounded-full blur-3xl" />
-                  <div className="bg-secondary/15 absolute -right-1/4 -bottom-1/12 h-[55%] w-[55%] rounded-full blur-3xl" />
-                </div>
-                <main className="container mx-auto h-full">{children}</main>
-              </div>
+              <main className="container mx-auto flex-1">
+                <div className="mx-3 md:mx-0">{children}</div>
+              </main>
               <Footer />
             </div>
           </Providers>

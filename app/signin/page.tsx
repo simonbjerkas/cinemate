@@ -10,7 +10,7 @@ export default function SignIn() {
   const { signIn } = useAuthActions();
 
   return (
-    <div className="mt-12 flex h-full flex-col items-center justify-center">
+    <div className="mt-12 mb-12 flex h-full flex-col items-center justify-center md:mb-0">
       <div className="mb-8 flex flex-col items-center gap-2">
         <Logo className="size-16" />
         <h1 className="text-foreground text-4xl font-bold tracking-tight">Welcome to Cinemate</h1>

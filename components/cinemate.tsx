@@ -5,7 +5,7 @@ import Link from 'next/link';
 const logoVariants = cva('flex items-center gap-2', {
   variants: {
     variant: {
-      default: 'text-primary text-2xl font-bold',
+      default: 'text-primary text-lg font-bold md:text-2xl',
       small: 'text-primary text-lg font-semibold',
     },
     size: {
