@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Logo } from '@/components/cinemate';
 
 import { useAuthActions } from '@convex-dev/auth/react';
 
@@ -9,18 +10,26 @@ export default function SignIn() {
   const { signIn } = useAuthActions();
 
   return (
-    <Card className="mx-auto mt-10 w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>Sign in to your account</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Button variant="outline" onClick={() => signIn('google')} className="w-full">
-          <GoogleIcon className="size-4" />
-          Sign in with Google
-        </Button>
-      </CardContent>
-    </Card>
+    <div className="mt-12 flex h-full flex-col items-center justify-center">
+      <div className="mb-8 flex flex-col items-center gap-2">
+        <Logo className="size-16" />
+        <h1 className="text-foreground text-4xl font-bold tracking-tight">Welcome to Cinemate</h1>
+        <p className="text-muted-foreground">Your personal movie companion</p>
+      </div>
+
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Sign in</CardTitle>
+          <CardDescription>Choose your preferred sign in method</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Button variant="outline" onClick={() => signIn('google')} className="w-full">
+            <GoogleIcon className="size-5" />
+            Sign in with Google
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 

@@ -34,7 +34,7 @@ export function Cinemate({
   );
 }
 
-function Logo({ className, ...props }: React.ComponentProps<'svg'>) {
+export function Logo({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
       className={className}
