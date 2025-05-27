@@ -1,3 +1,4 @@
+import { Cinemate } from '@/components/cinemate';
 import Link from 'next/link';
 
 export function Footer() {
@@ -6,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
-            <h3 className="text-primary mb-4 text-lg font-semibold">Cinemate</h3>
+            <Cinemate size="sm" variant="small" className="mb-4" />
             <p className="text-muted-foreground text-sm">
               Your personal movie companion. Track, rate, and discover films with fellow movie enthusiasts.
             </p>

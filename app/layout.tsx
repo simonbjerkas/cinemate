@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: 'Cinemate',
   description: 'Cinemate is a platform for discovering and sharing movies',
   icons: {
-    icon: '/convex.svg',
+    icon: '/cinemate.svg',
   },
 };
 

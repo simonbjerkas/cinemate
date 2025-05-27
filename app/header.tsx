@@ -20,6 +20,7 @@ import { SignOutButton } from '@/components/signout';
 import { SignInButton } from '@/components/signin';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Cinemate } from '@/components/cinemate';
 import { Search } from './search';
 
 import { X as CrossIcon, Menu as HamburgerMenuIcon } from 'lucide-react';
@@ -38,9 +39,7 @@ export function Header() {
     <>
       <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-primary text-2xl font-bold">Cinemate</span>
-          </Link>
+          <Cinemate />
           <div className="relative mx-4 max-w-xl flex-1">
             <Search />
           </div>
