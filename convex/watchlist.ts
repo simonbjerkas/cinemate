@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { internalMutation, internalQuery, mutation, query } from './_generated/server';
 import { getAuthUserId } from '@convex-dev/auth/server';
 import { Doc } from './_generated/dataModel';
@@ -21,7 +21,7 @@ export const getOrCreateWatchlist = internalMutation({
       });
       const insertedWatchlist = await ctx.db.get(newWatchlist);
       if (!insertedWatchlist) {
-        throw new Error('Failed to create watchlist');
+        throw new ConvexError('Failed to create watchlist');
       }
       return insertedWatchlist;
     }
@@ -58,7 +58,7 @@ export const add = mutation({
   handler: async (ctx, args): Promise<Doc<'watchlist_items'>> => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw new ConvexError('User not authenticated');
     }
 
     const [watchlist, movie] = await Promise.all([
@@ -82,7 +82,7 @@ export const add = mutation({
     });
 
     if (isInWatchlist) {
-      throw new Error('Movie is already in watchlist');
+      throw new ConvexError('Movie is already in watchlist');
     }
 
     const watchlistItem = await ctx.db.insert('watchlist_items', {
@@ -91,7 +91,7 @@ export const add = mutation({
     });
     const insertedItem = await ctx.db.get(watchlistItem);
     if (!insertedItem) {
-      throw new Error('Failed to add movie to watchlist');
+      throw new ConvexError('Failed to add movie to watchlist');
     }
     return insertedItem;
   },
@@ -104,7 +104,7 @@ export const inWatchlist = query({
   handler: async (ctx, args): Promise<boolean> => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error('User not authenticated');
+      return false;
     }
 
     const [movie, watchlist] = await Promise.all([
@@ -137,7 +137,7 @@ export const remove = mutation({
   handler: async (ctx, args): Promise<void> => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw new ConvexError('User not authenticated');
     }
 
     const [movie, watchlist] = await Promise.all([
@@ -152,7 +152,7 @@ export const remove = mutation({
     ]);
 
     if (!watchlist || !movie) {
-      throw new Error('Movie or watchlist not found');
+      throw new ConvexError('Movie or watchlist not found');
     }
 
     const watchlistItem = await ctx.db
@@ -162,7 +162,7 @@ export const remove = mutation({
       .unique();
 
     if (!watchlistItem) {
-      throw new Error('Movie is not in watchlist');
+      throw new ConvexError('Movie is not in watchlist');
     }
 
     await ctx.db.delete(watchlistItem._id);
@@ -183,7 +183,7 @@ export const getWatchlist = query({
   handler: async (ctx): Promise<Doc<'movies'>[]> => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error('User not authenticated');
+      throw new ConvexError('User not authenticated');
     }
 
     const watchlist = await ctx.db

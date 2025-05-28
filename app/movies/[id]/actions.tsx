@@ -24,9 +24,13 @@ export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
     }
     switch (inWatchlist) {
       case true:
-        return removeFromWatchlist({ externalId: Number(id) });
+        return removeFromWatchlist({ externalId: Number(id) }).catch(e => {
+          console.error(e);
+        });
       case false:
-        return addToWatchlist(details);
+        return addToWatchlist(details).catch(e => {
+          console.error(e);
+        });
       default:
         return;
     }
