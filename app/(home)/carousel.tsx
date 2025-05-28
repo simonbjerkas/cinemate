@@ -63,7 +63,7 @@ export function CarouselSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                 <div className="absolute right-0 bottom-0 left-0 p-12">
                   <h1 className="mb-4 text-4xl font-bold text-white">{movie.title}</h1>
-                  <p className="mb-6 max-w-2xl text-lg text-gray-200">{movie.overview}</p>
+                  <p className="mb-6 line-clamp-3 max-w-2xl text-lg text-gray-200">{movie.overview}</p>
                   <Button asChild size="lg">
                     <Link href={`/movies/${movie.id}`}>View Details</Link>
                   </Button>
