@@ -31,6 +31,7 @@ import { useEffect, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import { useConvexAuth, useQuery } from 'convex/react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 export function Header() {
@@ -144,6 +145,7 @@ function Navbar() {
 
 function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isOpen) {
@@ -152,6 +154,10 @@ function MobileNavbar() {
       document.body.style.overflow = 'auto';
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
     <>
