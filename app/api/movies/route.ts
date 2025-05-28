@@ -1,55 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MovieCredits, MovieDetails, MovieSearchResponse } from '@/lib/types';
-import { handleCors } from '@/lib/cors';
 
-const url = 'https://api.themoviedb.org/3';
-const options = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    Authorization: 'Bearer ' + process.env.TMDB_API_KEY,
-  },
-};
+import { MovieCredits, MovieDetails, MovieSearchResponse } from '@/lib/types';
+import { handleCors } from '@/lib/api/cors';
+import { tmdbFetch } from '@/lib/api/utils';
 
 export async function GET(request: NextRequest) {
-  if (!process.env.TMDB_API_KEY) {
-    return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
-  }
-
   const corsHeaders = handleCors(request);
   const { searchParams } = new URL(request.url);
+
   const query = searchParams.get('query');
   const id = searchParams.get('id');
   const credits = searchParams.get('credits');
   const popular = searchParams.get('popular');
+  const trending = searchParams.get('trending');
 
   try {
     if (id) {
       // Get movie details
-      const res = await fetch(`${url}/movie/${id}?language=en-US`, options);
-      const data = await res.json();
-      return NextResponse.json(data as MovieDetails, { headers: corsHeaders });
+      const data = await tmdbFetch<MovieDetails>(`/movie/${id}`);
+      return NextResponse.json(data, { headers: corsHeaders });
     }
 
     if (query) {
       // Search movies
-      const res = await fetch(`${url}/search/movie?query=${query}&include_adult=false&language=en-US&page=1`, options);
-      const data = await res.json();
-      return NextResponse.json(data as MovieSearchResponse, { headers: corsHeaders });
+      const data = await tmdbFetch<MovieSearchResponse>(`/search/movie?query=${query}&page=1`);
+      return NextResponse.json(data, { headers: corsHeaders });
     }
 
     if (credits) {
       // Get movie credits
-      const res = await fetch(`${url}/movie/${id}/credits?language=en-US`, options);
-      const data = await res.json();
-      return NextResponse.json(data as MovieCredits, { headers: corsHeaders });
+      const data = await tmdbFetch<MovieCredits>(`/movie/${id}/credits?page=1`);
+      return NextResponse.json(data, { headers: corsHeaders });
     }
 
     if (popular) {
       // Get popular movies
-      const res = await fetch(`${url}/movie/popular?language=en-US&page=1`, options);
-      const data = await res.json();
-      return NextResponse.json(data as MovieSearchResponse, { headers: corsHeaders });
+      const data = await tmdbFetch<MovieSearchResponse>(`/movie/popular?page=1`);
+      return NextResponse.json(data, { headers: corsHeaders });
+    }
+
+    if (trending) {
+      // Get trending movies
+      const data = await tmdbFetch<MovieSearchResponse>(`/trending/movie/day?page=1`);
+      return NextResponse.json(data, { headers: corsHeaders });
     }
 
     return NextResponse.json({ error: 'Missing query or id parameter' }, { status: 400, headers: corsHeaders });

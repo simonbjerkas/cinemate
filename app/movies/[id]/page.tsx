@@ -8,6 +8,8 @@ import { MovieDetails } from '@/lib/types';
 
 import Image from 'next/image';
 import { use, useEffect, useState } from 'react';
+import { api } from '@/convex/_generated/api';
+import { useMutation, useQuery } from 'convex/react';
 
 interface MoviePageProps {
   params: Promise<{
@@ -18,6 +20,36 @@ interface MoviePageProps {
 export default function MoviePage({ params }: MoviePageProps) {
   const { id } = use(params);
   const [movie, setMovie] = useState<MovieDetails | null>(null);
+  const addToWatchlist = useMutation(api.watchlist.add);
+  const removeFromWatchlist = useMutation(api.watchlist.remove);
+  const inWatchlist = useQuery(api.watchlist.inWatchlist, {
+    externalId: Number(id),
+  });
+
+  const handleWatchlist = async (details?: {
+    title: string;
+    poster_path: string | null;
+    release_date: string;
+    externalId: number;
+  }) => {
+    if (!details) {
+      return;
+    }
+    switch (inWatchlist) {
+      case true:
+        return removeFromWatchlist({ externalId: Number(id) });
+      case false:
+        return addToWatchlist({
+          title: details.title,
+          poster_path: details.poster_path || undefined,
+          release_date: details.release_date,
+          externalId: Number(id),
+        });
+      default:
+        return;
+    }
+  };
+
   useEffect(() => {
     const fetchMovie = async () => {
       const movie = await getMovieDetails(Number(id));
@@ -76,7 +108,20 @@ export default function MoviePage({ params }: MoviePageProps) {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button className="w-full">Add to Watchlist</Button>
+              <Button
+                className="w-full"
+                variant={inWatchlist ? 'outline' : 'default'}
+                onClick={async () =>
+                  await handleWatchlist({
+                    title: movie.title,
+                    poster_path: movie.poster_path,
+                    release_date: movie.release_date,
+                    externalId: movie.id,
+                  })
+                }
+              >
+                {inWatchlist ? 'Added to Watchlist' : 'Add to Watchlist'}
+              </Button>
               <Button variant="secondary" className="w-full">
                 Write a Review
               </Button>

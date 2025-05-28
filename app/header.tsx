@@ -62,7 +62,7 @@ function Profile() {
         user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" className="size-9 rounded-full">
                 <Avatar>
                   <AvatarImage src={user.image} />
                   <AvatarFallback>

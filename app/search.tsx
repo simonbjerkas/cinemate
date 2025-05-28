@@ -32,7 +32,6 @@ export function Search() {
       const movies = await searchMovies(debouncedSearchQuery);
       const sortedMovies = movies.results.sort((a, b) => b.popularity - a.popularity);
       const slicedMovies = sortedMovies.slice(0, 5);
-      console.log(slicedMovies);
       return slicedMovies;
     },
     enabled: searchQuery.trim().length > 2,

@@ -1,4 +1,5 @@
 import { MovieDetails, MovieSearchResponse } from '@/lib/types';
+import { transformMovie } from '@/lib/utils';
 
 export async function searchMovies(query: string) {
   const res = await fetch(`/api/movies?query=${encodeURIComponent(query)}`);
@@ -16,10 +17,29 @@ export async function getMovieDetails(id: number) {
   return res.json() as Promise<MovieDetails>;
 }
 
-export async function getMovies() {
+export async function getPopularMovies() {
   const res = await fetch('/api/movies?popular=true');
   if (!res.ok) {
     throw new Error('Failed to fetch movies');
   }
-  return res.json() as Promise<MovieSearchResponse>;
+  const data = (await res.json()) as MovieSearchResponse;
+  return data.results.map(transformMovie);
+}
+
+export async function getTrendingMovies() {
+  const res = await fetch('/api/movies?trending=true');
+  if (!res.ok) {
+    throw new Error('Failed to fetch movies');
+  }
+  const data = (await res.json()) as MovieSearchResponse;
+  return data.results.map(transformMovie);
+}
+
+export async function getMainMovies() {
+  const res = await fetch('/api/movies?trending=true');
+  if (!res.ok) {
+    throw new Error('Failed to fetch movies');
+  }
+  const data = (await res.json()) as MovieSearchResponse;
+  return data.results.slice(0, 5);
 }

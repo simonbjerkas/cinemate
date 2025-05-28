@@ -1,11 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 
-import { Movie } from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Doc } from '@/convex/_generated/dataModel';
 
-export function MovieCard({ movie }: { movie: Movie }) {
+export function MovieCard({ movie }: { movie: Omit<Doc<'movies'>, '_id' | '_creationTime' | 'last_updated'> }) {
   return (
     <Card className="relative aspect-[2/3] overflow-hidden transition-all duration-300 hover:scale-105">
       <Image
@@ -25,7 +25,7 @@ export function MovieCard({ movie }: { movie: Movie }) {
         </CardHeader>
         <CardContent>
           <Button asChild className="w-full">
-            <Link href={`/movies/${movie.id}`}>View Details</Link>
+            <Link href={`/movies/${movie.external_id}`}>View Details</Link>
           </Button>
         </CardContent>
       </div>

@@ -1,4 +1,6 @@
-export interface Movie {
+import { Doc } from '@/convex/_generated/dataModel';
+
+export interface TMDBMovie {
   backdrop_path: string | null;
   genre_ids: number[];
   id: number;
@@ -14,12 +16,12 @@ export interface Movie {
 
 export interface MovieSearchResponse {
   page: number;
-  results: Movie[];
+  results: TMDBMovie[];
   total_pages: number;
   total_results: number;
 }
 
-export interface MovieDetails extends Movie {
+export interface MovieDetails extends TMDBMovie {
   budget: number;
   genres: {
     id: number;
@@ -75,3 +77,6 @@ export interface CrewMember extends MoviePerson {
   department: string;
   job: string;
 }
+
+// Local movie type
+export type Movie = Omit<Doc<'movies'>, '_id' | '_creationTime' | 'last_updated'>;

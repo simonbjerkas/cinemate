@@ -6,47 +6,29 @@ export default defineSchema({
   ...authTables,
   movies: defineTable({
     title: v.string(),
-    description: v.string(),
-    rating: v.number(),
-  }),
-});
+    poster_path: v.optional(v.string()),
+    release_date: v.optional(v.string()),
+    external_id: v.number(),
+    last_updated: v.string(),
+  }).index('by_external_id', ['external_id']),
 
-// interface _  {
-//   budget: number;
-//   genres: {
-//     id: number;
-//     name: string;
-//   }[];
-//   homepage: string | null;
-//   imdb_id: string | null;
-//   production_companies: {
-//     id: number;
-//     logo_path: string | null;
-//     name: string;
-//     origin_country: string;
-//   }[];
-//   production_countries: {
-//     iso_3166_1: string;
-//     name: string;
-//   }[];
-//   revenue: number;
-//   runtime: number;
-//   spoken_languages: {
-//     english_name: string;
-//     iso_639_1: string;
-//     name: string;
-//   }[];
-//   status: string;
-//   tagline: string | null;
-//   backdrop_path: string | null;
-//   genre_ids: number[];
-//   id: number;
-//   original_language: string;
-//   original_title: string;
-//   overview: string;
-//   popularity: number;
-//   poster_path: string | null;
-//   release_date: string;
-//   title: string;
-//   video: boolean;
-// }
+  movie_entries: defineTable({
+    movie_id: v.id('movies'),
+    user_id: v.id('users'),
+    rating: v.optional(v.number()),
+    review: v.optional(v.string()),
+    updated_at: v.optional(v.string()),
+  })
+    .index('by_movie_id', ['movie_id'])
+    .index('by_user_id', ['user_id']),
+
+  watchlist: defineTable({
+    user_id: v.id('users'),
+    updated_at: v.string(),
+  }).index('by_user_id', ['user_id']),
+
+  watchlist_items: defineTable({
+    watchlist_id: v.id('watchlist'),
+    movie_id: v.id('movies'),
+  }).index('by_watchlist_id', ['watchlist_id']),
+});
