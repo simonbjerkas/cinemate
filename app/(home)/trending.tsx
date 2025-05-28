@@ -1,3 +1,5 @@
+'use client';
+
 import { MovieCard } from '@/components/movie-card';
 
 import { getTrendingMovies } from '@/lib/api';
