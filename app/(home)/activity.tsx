@@ -1,44 +1,60 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+import { api } from '@/convex/_generated/api';
+import { useQuery } from 'convex/react';
+import Image from 'next/image';
 
 export function ActivitySection() {
+  const recent = useQuery(api.entries.recent);
+
+  if (!recent) {
+    return <ActivitySkeleton />;
+  }
+
   return (
     <section className="mb-12">
       <h2 className="mb-6 text-2xl font-bold">Recent Activity</h2>
-      <div className="space-y-4">
-        {[
-          {
-            id: 1,
-            userId: 1,
-            content: 'Activity 1',
-            createdAt: new Date(),
-          },
-          {
-            id: 2,
-            userId: 2,
-            content: 'Activity 2',
-            createdAt: new Date(),
-          },
-          {
-            id: 3,
-            userId: 3,
-            content: 'Activity 3',
-            createdAt: new Date(),
-          },
-          {
-            id: 4,
-            userId: 4,
-            content: 'Activity 4',
-            createdAt: new Date(),
-          },
-        ].map(activity => (
-          <Card key={activity.id}>
+      <div className="flex flex-col gap-4">
+        {recent.map(activity => (
+          <Card key={activity._id}>
             <CardHeader>
-              <CardTitle>{activity.content}</CardTitle>
-              <CardDescription>{activity.createdAt.toLocaleDateString()}</CardDescription>
+              <Image
+                src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
+                alt={activity.movie_title ?? ''}
+                width={100}
+                height={100}
+              />
+              <CardTitle>{activity.movie_title}</CardTitle>
+              <CardDescription>{activity._creationTime.toLocaleString()}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p>{activity.content}</p>
-              <p>{activity.createdAt.toLocaleDateString()}</p>
+              <p>{activity.review}</p>
+              <p>{activity.rating}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ActivitySkeleton() {
+  return (
+    <section className="mb-12">
+      <Skeleton className="mb-6 h-8 w-48" />
+      <div className="flex flex-col gap-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Card key={index}>
+            <CardHeader>
+              <Skeleton className="mb-2 h-6 w-3/4" />
+              <Skeleton className="h-4 w-32" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="mb-2 h-4 w-full" />
+              <Skeleton className="h-4 w-24" />
             </CardContent>
           </Card>
         ))}

@@ -52,8 +52,8 @@ export const add = mutation({
   args: {
     title: v.string(),
     poster_path: v.optional(v.string()),
-    release_date: v.string(),
-    externalId: v.number(),
+    release_date: v.optional(v.string()),
+    external_id: v.number(),
   },
   handler: async (ctx, args): Promise<Doc<'watchlist_items'>> => {
     const userId = await getAuthUserId(ctx);
@@ -70,7 +70,7 @@ export const add = mutation({
           title: args.title,
           poster_path: args.poster_path,
           release_date: args.release_date,
-          external_id: args.externalId,
+          external_id: args.external_id,
           last_updated: Date.now().toString(),
         },
       }),

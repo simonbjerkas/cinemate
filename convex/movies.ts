@@ -25,7 +25,7 @@ export const getOrAddMovie = internalMutation({
     movie: v.object({
       title: v.string(),
       poster_path: v.optional(v.string()),
-      release_date: v.string(),
+      release_date: v.optional(v.string()),
       external_id: v.number(),
       last_updated: v.string(),
     }),

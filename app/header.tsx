@@ -96,7 +96,7 @@ function Profile() {
           <Skeleton className="size-9 rounded-full" />
         )
       ) : (
-        <div className="ml-2">
+        <div className="ml-2 hidden md:block">
           <SignInButton />
         </div>
       )}
@@ -110,12 +110,12 @@ const LINKS = [
     href: '/movies',
   },
   {
-    label: 'Lists',
-    href: '/lists',
+    label: 'Watchlist',
+    href: '/watchlist',
   },
   {
-    label: 'People',
-    href: '/people',
+    label: 'Entries',
+    href: '/entries',
   },
 ];
 
@@ -190,6 +190,9 @@ function MobileNavbar() {
                   </Link>
                 </NavigationMenuItem>
               ))}
+              <NavigationMenuItem asChild className="w-80">
+                <SignInButton className="w-full" />
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         )}

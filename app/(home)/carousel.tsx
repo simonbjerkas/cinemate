@@ -15,7 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export function CarouselSection() {
-  const { data: movies } = useQuery({
+  const { data: movies, isLoading } = useQuery({
     queryKey: ['main-movies'],
     queryFn: () => getMainMovies(),
   });
@@ -37,8 +37,8 @@ export function CarouselSection() {
     });
   }, [api]);
 
-  if (!movies) {
-    return <LoadingSkeleton />;
+  if (isLoading) {
+    return <CarouselSkeleton />;
   }
 
   return (
@@ -50,7 +50,7 @@ export function CarouselSection() {
         opts={{ loop: true }}
       >
         <CarouselContent>
-          {movies.map(movie => (
+          {movies?.map(movie => (
             <CarouselItem key={movie.id} className="relative h-[60vh]">
               <Image
                 src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
@@ -89,10 +89,28 @@ export function CarouselSection() {
   );
 }
 
-function LoadingSkeleton() {
+function CarouselSkeleton() {
   return (
-    <div className="py-8">
-      <Skeleton className="mb-12 h-[60vh] w-full rounded-xl" />
-    </div>
+    <section className="container mx-auto mb-12">
+      <div className="relative h-[60vh] overflow-hidden rounded-xl">
+        <Skeleton className="absolute inset-0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+          <div className="absolute right-0 bottom-0 left-0 p-12">
+            <Skeleton className="mb-4 h-10 w-96" />
+            <div className="mb-6 space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+            <Skeleton className="h-12 w-32" />
+          </div>
+        </div>
+      </div>
+      <div className="mt-3 flex justify-center gap-4">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton key={index} className="size-4 rounded-full" />
+        ))}
+      </div>
+    </section>
   );
 }
