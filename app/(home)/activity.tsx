@@ -10,32 +10,32 @@ import Image from 'next/image';
 export function ActivitySection() {
   const recent = useQuery(api.entries.recent);
 
-  if (!recent) {
-    return <ActivitySkeleton />;
-  }
-
   return (
     <section className="mb-12">
       <h2 className="mb-6 text-2xl font-bold">Recent Activity</h2>
       <div className="flex flex-col gap-4">
-        {recent.map(activity => (
-          <Card key={activity._id}>
-            <CardHeader>
-              <Image
-                src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
-                alt={activity.movie_title ?? ''}
-                width={100}
-                height={100}
-              />
-              <CardTitle>{activity.movie_title}</CardTitle>
-              <CardDescription>{activity._creationTime.toLocaleString()}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>{activity.review}</p>
-              <p>{activity.rating}</p>
-            </CardContent>
-          </Card>
-        ))}
+        {recent ? (
+          recent.map(activity => (
+            <Card key={activity._id}>
+              <CardHeader>
+                <Image
+                  src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
+                  alt={activity.movie_title ?? ''}
+                  width={100}
+                  height={100}
+                />
+                <CardTitle>{activity.movie_title}</CardTitle>
+                <CardDescription>{activity._creationTime.toLocaleString()}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>{activity.review}</p>
+                <p>{activity.rating}</p>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <ActivitySkeleton />
+        )}
       </div>
     </section>
   );
@@ -43,22 +43,20 @@ export function ActivitySection() {
 
 function ActivitySkeleton() {
   return (
-    <section className="mb-12">
-      <Skeleton className="mb-6 h-8 w-48" />
-      <div className="flex flex-col gap-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Card key={index}>
-            <CardHeader>
-              <Skeleton className="mb-2 h-6 w-3/4" />
-              <Skeleton className="h-4 w-32" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="mb-2 h-4 w-full" />
-              <Skeleton className="h-4 w-24" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </section>
+    <div className="flex flex-col gap-4">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Card key={index}>
+          <CardHeader>
+            <Skeleton className="mb-2 h-24 w-full max-w-[100px]" />
+            <Skeleton className="mb-2 h-6 w-3/4 max-w-[300px]" />
+            <Skeleton className="h-4 w-1/3 max-w-[200px]" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="mb-2 h-4 w-full max-w-[500px]" />
+            <Skeleton className="h-4 w-1/4 max-w-[100px]" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }

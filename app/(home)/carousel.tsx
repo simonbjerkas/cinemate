@@ -96,18 +96,18 @@ function CarouselSkeleton() {
         <Skeleton className="absolute inset-0" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
           <div className="absolute right-0 bottom-0 left-0 p-12">
-            <Skeleton className="mb-4 h-10 w-96" />
+            <Skeleton className="mb-4 h-10 w-3/4 max-w-[400px]" />
             <div className="mb-6 space-y-2">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-full max-w-[600px]" />
+              <Skeleton className="h-4 w-full max-w-[600px]" />
+              <Skeleton className="h-4 w-3/4 max-w-[450px]" />
             </div>
-            <Skeleton className="h-12 w-32" />
+            <Skeleton className="h-12 w-1/4 max-w-[150px]" />
           </div>
         </div>
       </div>
       <div className="mt-3 flex justify-center gap-4">
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: 5 }).map((_, index) => (
           <Skeleton key={index} className="size-4 rounded-full" />
         ))}
       </div>
