@@ -3,15 +3,36 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerClose,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import { TextEditor } from '@/components/text-editor';
 
 import { Movie, TMDBMovie } from '@/lib/types';
 import { transformMovie } from '@/lib/utils';
 import { api } from '@/convex/_generated/api';
 
 import { useMutation, useQuery } from 'convex/react';
+import { useScreen } from '@/hooks/screen';
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Dialog } from '@/components/ui/dialog';
 
 export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
-  const addEntry = useMutation(api.entries.add);
   const addToWatchlist = useMutation(api.watchlist.add);
   const removeFromWatchlist = useMutation(api.watchlist.remove);
   const inWatchlist = useQuery(api.watchlist.inWatchlist, {
@@ -56,16 +77,7 @@ export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
         >
           {inWatchlist ? 'Added to Watchlist' : 'Add to Watchlist'}
         </Button>
-        <Button
-          variant="secondary"
-          className="w-full"
-          onClick={async () => {
-            const entry = transformMovie(movie);
-            await addEntry({ ...entry, rating: 5, review: 'hei' });
-          }}
-        >
-          Write a Review
-        </Button>
+        <ReviewAction movie={movie} />
       </CardContent>
     </Card>
   );
@@ -82,5 +94,78 @@ function MovieActionsSkeleton() {
         <Skeleton className="h-10 w-full" />
       </CardContent>
     </Card>
+  );
+}
+
+function ReviewAction({ movie }: { movie: TMDBMovie }) {
+  const addEntry = useMutation(api.entries.add);
+  const { isMobile } = useScreen();
+
+  if (isMobile) {
+    return (
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="secondary" className="w-full">
+            Write a Review
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent className="h-full">
+          <div className="mx-auto flex h-full w-full max-w-2xl flex-col">
+            <DrawerHeader>
+              <DrawerTitle>Write a Review</DrawerTitle>
+              <DrawerDescription>Write a review for {movie.title}</DrawerDescription>
+            </DrawerHeader>
+            <div className="flex-1 px-4">
+              <TextEditor menubar />
+            </div>
+            <DrawerFooter>
+              <Button
+                onClick={async () => {
+                  const entry = transformMovie(movie);
+                  await addEntry({ ...entry, rating: 5, review: 'hei' });
+                }}
+              >
+                Submit
+              </Button>
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="secondary" className="w-full">
+          Write a Review
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Write a Review</DialogTitle>
+          <DialogDescription>Write a review for {movie.title}</DialogDescription>
+        </DialogHeader>
+        <div className="h-96 overflow-x-auto">
+          <TextEditor menubar />
+        </div>
+        <DialogFooter>
+          <Button
+            onClick={async () => {
+              const entry = transformMovie(movie);
+              await addEntry({ ...entry, rating: 5, review: 'hei' });
+            }}
+          >
+            Submit
+          </Button>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -53,22 +53,23 @@ export const TextEditor = ({
     },
     editorProps: {
       attributes: {
-        class: cn(editorContentStyle, 'min-h-48'),
+        class: cn(editorContentStyle, 'min-h-full wrap-break-word'),
       },
     },
   });
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex h-full flex-col gap-2">
       {menubar && editor && <TextEditorMenu editor={editor} />}
       <div
         className={cn(
-          'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex rounded-md border px-3 py-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+          'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex flex-1 rounded-md border px-3 py-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+          'max-w-full overflow-y-auto',
           className,
         )}
         {...props}
       >
-        <EditorContent className="min-h-full flex-1" editor={editor} />
+        <EditorContent className="min-h-full w-full flex-1" editor={editor} />
       </div>
     </div>
   );
