@@ -197,7 +197,7 @@ function MobileNavbar() {
                   </Link>
                 </NavigationMenuItem>
               ))}
-              {isAuthenticated && (
+              {!isAuthenticated && (
                 <NavigationMenuItem asChild className="w-80">
                   <SignInButton className="w-full" />
                 </NavigationMenuItem>
