@@ -146,6 +146,7 @@ function Navbar() {
 function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { isAuthenticated } = useConvexAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -196,9 +197,11 @@ function MobileNavbar() {
                   </Link>
                 </NavigationMenuItem>
               ))}
-              <NavigationMenuItem asChild className="w-80">
-                <SignInButton className="w-full" />
-              </NavigationMenuItem>
+              {isAuthenticated && (
+                <NavigationMenuItem asChild className="w-80">
+                  <SignInButton className="w-full" />
+                </NavigationMenuItem>
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         )}
