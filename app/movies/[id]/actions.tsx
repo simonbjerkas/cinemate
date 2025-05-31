@@ -31,6 +31,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Dialog } from '@/components/ui/dialog';
+import { useAppForm } from '@/hooks/form';
+import { useState } from 'react';
 
 export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
   const addToWatchlist = useMutation(api.watchlist.add);
@@ -100,71 +102,116 @@ function MovieActionsSkeleton() {
 function ReviewAction({ movie }: { movie: TMDBMovie }) {
   const addEntry = useMutation(api.entries.add);
   const { isMobile } = useScreen();
+  const [open, setOpen] = useState(false);
+
+  const form = useAppForm({
+    defaultValues: {
+      rating: 5,
+      review: '',
+    },
+    onSubmit: async ({ value }) => {
+      const entry = transformMovie(movie);
+      await addEntry({ ...entry, rating: value.rating, review: value.review })
+        .then(() => {
+          setOpen(false);
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    },
+  });
 
   if (isMobile) {
     return (
-      <Drawer>
+      <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
           <Button variant="secondary" className="w-full">
             Write a Review
           </Button>
         </DrawerTrigger>
         <DrawerContent className="h-full">
-          <div className="mx-auto flex h-full w-full max-w-2xl flex-col">
+          <form
+            className="mx-auto flex h-full w-full max-w-2xl flex-col"
+            onSubmit={e => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
             <DrawerHeader>
               <DrawerTitle>Write a Review</DrawerTitle>
               <DrawerDescription>Write a review for {movie.title}</DrawerDescription>
             </DrawerHeader>
-            <div className="flex-1 px-4">
-              <TextEditor menubar />
+            <div className="flex flex-1 flex-col gap-2 px-4">
+              <form.AppField
+                name="rating"
+                children={field => {
+                  return <field.StarRatingField label="Rating" />;
+                }}
+              />
+              <form.AppField
+                name="review"
+                children={field => {
+                  return <field.TextEditorField label="Review" />;
+                }}
+              />
             </div>
             <DrawerFooter>
-              <Button
-                onClick={async () => {
-                  const entry = transformMovie(movie);
-                  await addEntry({ ...entry, rating: 5, review: 'hei' });
-                }}
-              >
-                Submit
-              </Button>
+              <form.AppForm>
+                <form.SubscribeButton label="Submit" />
+              </form.AppForm>
               <DrawerClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DrawerClose>
             </DrawerFooter>
-          </div>
+          </form>
         </DrawerContent>
       </Drawer>
     );
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" className="w-full">
           Write a Review
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Write a Review</DialogTitle>
-          <DialogDescription>Write a review for {movie.title}</DialogDescription>
-        </DialogHeader>
-        <div className="h-96 overflow-x-auto">
-          <TextEditor menubar />
-        </div>
-        <DialogFooter>
-          <Button
-            onClick={async () => {
-              const entry = transformMovie(movie);
-              await addEntry({ ...entry, rating: 5, review: 'hei' });
-            }}
-          >
-            Submit
-          </Button>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-        </DialogFooter>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={e => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle>Write a Review</DialogTitle>
+            <DialogDescription>Write a review for {movie.title}</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex h-96 flex-col gap-2">
+            <form.AppField
+              name="rating"
+              children={field => {
+                return <field.StarRatingField label="Rating" />;
+              }}
+            />
+            <form.AppField
+              name="review"
+              children={field => {
+                return <field.TextEditorField label="Review" />;
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <form.AppForm>
+              <form.SubscribeButton label="Submit" />
+            </form.AppForm>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

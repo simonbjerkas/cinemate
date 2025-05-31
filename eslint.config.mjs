@@ -16,6 +16,9 @@ const eslintConfig = [
     plugins: {
       '@tanstack/query': tanstackQueryPlugin,
     },
+    rules: {
+      'react/no-children-prop': 'off',
+    },
   },
 ];
 

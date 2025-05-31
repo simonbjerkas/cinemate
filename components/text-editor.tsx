@@ -7,8 +7,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 
-import { Button } from './ui/button';
-import { BoldIcon, ItalicIcon, UnderlineIcon } from 'lucide-react';
+import { Bold as BoldIcon, Italic as ItalicIcon, Underline as UnderlineIcon } from 'lucide-react';
+import { Toggle } from './ui/toggle';
 
 export const editorContentStyle = cn(
   'prose prose-sm',
@@ -25,12 +25,15 @@ export const TextEditor = ({
   menubar = false,
   value,
   onChange,
+  name,
+  id,
   ...props
 }: React.ComponentPropsWithoutRef<'div'> & {
   placeholder?: string;
   menubar?: boolean;
   value?: string;
   onChange?: (value: string) => void;
+  name?: string;
 }) => {
   const editor = useEditor({
     immediatelyRender: false,
@@ -59,17 +62,17 @@ export const TextEditor = ({
   });
 
   return (
-    <div className="flex h-full flex-col gap-2">
+    <div className="flex size-full flex-col gap-2 overflow-x-auto">
       {menubar && editor && <TextEditorMenu editor={editor} />}
       <div
         className={cn(
           'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex flex-1 rounded-md border px-3 py-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-          'max-w-full overflow-y-auto',
+          'w-full overflow-y-auto',
           className,
         )}
         {...props}
       >
-        <EditorContent className="min-h-full w-full flex-1" editor={editor} />
+        <EditorContent id={id} name={name} className="min-h-full w-full flex-1" editor={editor} />
       </div>
     </div>
   );
@@ -81,37 +84,34 @@ export const TextEditorMenu = ({ editor }: { editor: Editor }) => {
   return (
     <ul className="flex items-center gap-2">
       <li>
-        <Button
-          type="button"
-          size="icon"
-          variant={editor.isActive('bold') ? 'secondary' : 'outline'}
-          aria-label="Toggle bold font."
-          onClick={() => editor.chain().focus().toggleBold().run()}
+        <Toggle
+          pressed={editor.isActive('bold')}
+          variant="outline"
+          size="sm"
+          onPressedChange={() => editor.chain().focus().toggleBold().run()}
         >
           <BoldIcon />
-        </Button>
+        </Toggle>
       </li>
       <li>
-        <Button
-          type="button"
-          size="icon"
-          variant={editor.isActive('italic') ? 'secondary' : 'outline'}
-          aria-label="Toggle italic font."
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+        <Toggle
+          pressed={editor.isActive('italic')}
+          variant="outline"
+          size="sm"
+          onPressedChange={() => editor.chain().focus().toggleItalic().run()}
         >
           <ItalicIcon />
-        </Button>
+        </Toggle>
       </li>
       <li>
-        <Button
-          type="button"
-          size="icon"
-          variant={editor.isActive('underline') ? 'secondary' : 'outline'}
-          aria-label="Toggle underline font."
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
+        <Toggle
+          pressed={editor.isActive('underline')}
+          variant="outline"
+          size="sm"
+          onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
         >
           <UnderlineIcon />
-        </Button>
+        </Toggle>
       </li>
     </ul>
   );
