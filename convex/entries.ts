@@ -1,4 +1,4 @@
-import { ConvexError, v } from 'convex/values';
+import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { getAuthUserId } from '@convex-dev/auth/server';
 import { internal } from './_generated/api';
@@ -62,7 +62,7 @@ export const entriesByMovieAndUser = query({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new ConvexError('User not authenticated');
+      return [];
     }
 
     const movie = await ctx.db
