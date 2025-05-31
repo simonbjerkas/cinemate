@@ -79,3 +79,30 @@ export const entriesByMovieAndUser = query({
       .collect();
   },
 });
+
+export const getEntries = query({
+  args: {},
+  handler: async ctx => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return [];
+    }
+    const entries = await ctx.db
+      .query('movie_entries')
+      .withIndex('by_user_id', q => q.eq('user_id', userId))
+      .order('desc')
+      .collect();
+
+    return Promise.all(
+      entries.map(async entry => {
+        const movie = await ctx.db.get(entry.movie_id);
+        return {
+          ...entry,
+          movie_title: movie?.title,
+          movie_poster: movie?.poster_path,
+          movie_external_id: movie?.external_id,
+        };
+      }),
+    );
+  },
+});

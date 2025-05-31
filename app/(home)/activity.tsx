@@ -21,21 +21,23 @@ export function ActivitySection() {
         {recent ? (
           recent.map(activity => (
             <Card className="max-w-xl" key={activity._id}>
-              <CardHeader>
+              <CardHeader className="flex flex-row gap-4">
                 <Image
                   src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
                   alt={activity.movie_title ?? ''}
                   width={100}
                   height={100}
                 />
-                <CardTitle>{activity.movie_title}</CardTitle>
-                <CardDescription>
-                  {new Date(activity._creationTime).toLocaleString('en-US', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short',
-                    hour12: false,
-                  })}
-                </CardDescription>
+                <div className="flex flex-col gap-2">
+                  <CardTitle>{activity.movie_title}</CardTitle>
+                  <CardDescription>
+                    {new Date(activity._creationTime).toLocaleString('en-US', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                      hour12: false,
+                    })}
+                  </CardDescription>
+                </div>
               </CardHeader>
               <Separator className="mx-auto max-w-11/12 opacity-45" />
               <CardContent className="flex flex-col gap-2">

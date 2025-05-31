@@ -14,8 +14,8 @@ export default function MoviesPage() {
   }
   return (
     <div className="py-8">
-      <h1>Movies</h1>
-      <p>Recently added movies</p>
+      <h1 className="text-2xl font-bold">Movies</h1>
+      <p className="text-muted-foreground text-sm">Popular movies right now</p>
       <div className="my-4 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
         {movies.map(movie => (
           <MovieCard key={movie.external_id} movie={movie} />
