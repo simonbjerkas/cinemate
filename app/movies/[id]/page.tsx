@@ -3,6 +3,7 @@
 import { HeroSection } from './hero';
 import { MovieActions } from './actions';
 import { MovieDetails } from './details';
+import { MovieActivity } from './activity';
 
 import { getMovieDetails } from '@/lib/api';
 
@@ -24,12 +25,13 @@ export default function MoviePage({ params }: MoviePageProps) {
   });
 
   return (
-    <div className="py-8">
+    <div className="flex flex-col gap-8 py-8">
       <HeroSection movie={movie} />
       <section className="grid gap-8 md:grid-cols-3">
         <MovieDetails movie={movie} />
         <MovieActions id={Number(id)} movie={movie} />
       </section>
+      <MovieActivity movieId={Number(id)} />
     </div>
   );
 }

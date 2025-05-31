@@ -20,7 +20,8 @@ export default defineSchema({
     updated_at: v.optional(v.string()),
   })
     .index('by_movie_id', ['movie_id'])
-    .index('by_user_id', ['user_id']),
+    .index('by_user_id', ['user_id'])
+    .index('by_movie_id_and_user_id', ['movie_id', 'user_id']),
 
   watchlist: defineTable({
     user_id: v.id('users'),

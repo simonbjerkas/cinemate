@@ -105,7 +105,7 @@ function ReviewAction({ movie }: { movie: TMDBMovie }) {
 
   const form = useAppForm({
     defaultValues: {
-      rating: 5,
+      rating: 0,
       review: '',
     },
     onSubmit: async ({ value }) => {

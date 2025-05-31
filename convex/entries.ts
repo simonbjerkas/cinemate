@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { getAuthUserId } from '@convex-dev/auth/server';
 import { internal } from './_generated/api';
@@ -52,5 +52,30 @@ export const add = mutation({
       review: args.review,
       rating: args.rating,
     });
+  },
+});
+
+export const entriesByMovieAndUser = query({
+  args: {
+    external_id: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new ConvexError('User not authenticated');
+    }
+
+    const movie = await ctx.db
+      .query('movies')
+      .withIndex('by_external_id', q => q.eq('external_id', args.external_id))
+      .first();
+    if (!movie) {
+      return [];
+    }
+    return ctx.db
+      .query('movie_entries')
+      .withIndex('by_movie_id_and_user_id', q => q.eq('movie_id', movie._id).eq('user_id', userId))
+      .order('desc')
+      .collect();
   },
 });
