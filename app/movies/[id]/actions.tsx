@@ -183,7 +183,7 @@ function ReviewAction({ movie, review }: { movie: TMDBMovie; review?: boolean })
               <DrawerTitle>Write a Review</DrawerTitle>
               <DrawerDescription>Write a review for {movie.title}</DrawerDescription>
             </DrawerHeader>
-            <div className="flex min-h-2/3 flex-1 flex-col gap-2 px-4">
+            <div className="flex min-h-60 flex-1 flex-col gap-2 px-4">
               <form.AppField
                 name="rating"
                 children={field => {
