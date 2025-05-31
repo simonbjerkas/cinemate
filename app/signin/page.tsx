@@ -5,9 +5,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Logo } from '@/components/cinemate';
 
 import { useAuthActions } from '@convex-dev/auth/react';
+import { useModifySearchParams } from '@/hooks/search-params';
 
 export default function SignIn() {
   const { signIn } = useAuthActions();
+  const { searchParams } = useModifySearchParams();
+  const redirect = searchParams.get('redirect');
+
+  const handleSignIn = () => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('redirect');
+    const redirectTo = `${redirect || ''}${redirect ? '?' : ''}${params.toString()}`;
+    signIn('google', { redirectTo });
+  };
 
   return (
     <div className="mt-12 mb-12 flex h-full flex-col items-center justify-center md:mb-0">
@@ -23,7 +33,7 @@ export default function SignIn() {
           <CardDescription>Choose your preferred sign in method</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button variant="outline" onClick={() => signIn('google')} className="w-full">
+          <Button variant="outline" onClick={handleSignIn} className="w-full">
             <GoogleIcon className="size-5" />
             Sign in with Google
           </Button>

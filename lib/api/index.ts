@@ -1,4 +1,4 @@
-import { MovieDetails, MovieSearchResponse } from '@/lib/types';
+import { MovieCredits, MovieDetails, MovieSearchResponse } from '@/lib/types';
 import { transformMovie } from '@/lib/utils';
 
 export async function searchMovies(query: string) {
@@ -42,4 +42,12 @@ export async function getMainMovies() {
   }
   const data = (await res.json()) as MovieSearchResponse;
   return data.results.slice(0, 5);
+}
+
+export async function getMovieCredits(movieId: number) {
+  const res = await fetch(`/api/movies?credits=${movieId}`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch movie credits');
+  }
+  return res.json() as Promise<MovieCredits>;
 }

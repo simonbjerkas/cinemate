@@ -1,12 +1,15 @@
 'use client';
 
 import { HeroSection } from './hero';
-import { MovieActions } from './actions';
+import { MovieActions, UnauthenticatedMovieActions } from './actions';
 import { MovieDetails } from './details';
 import { MovieActivity } from './activity';
+import { MovieCredits } from './credits';
 
 import { getMovieDetails } from '@/lib/api';
+import { api } from '@/convex/_generated/api';
 
+import { useQuery as useConvexQuery } from 'convex/react';
 import { useQuery } from '@tanstack/react-query';
 import { use } from 'react';
 
@@ -18,6 +21,7 @@ interface MoviePageProps {
 
 export default function MoviePage({ params }: MoviePageProps) {
   const { id } = use(params);
+  const user = useConvexQuery(api.users.getUser);
   const { data: movie } = useQuery({
     queryKey: [id],
     queryFn: () => getMovieDetails(Number(id)),
@@ -29,9 +33,10 @@ export default function MoviePage({ params }: MoviePageProps) {
       <HeroSection movie={movie} />
       <section className="grid gap-8 md:grid-cols-3">
         <MovieDetails movie={movie} />
-        <MovieActions id={Number(id)} movie={movie} />
+        {user ? <MovieActions id={Number(id)} movie={movie} /> : <UnauthenticatedMovieActions id={Number(id)} />}
       </section>
-      <MovieActivity movieId={Number(id)} />
+      {user && <MovieActivity movieId={Number(id)} />}
+      <MovieCredits movieId={Number(id)} />
     </div>
   );
 }

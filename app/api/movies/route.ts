@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 
     if (credits) {
       // Get movie credits
-      const data = await tmdbFetch<MovieCredits>(`/movie/${id}/credits?page=1`);
+      const data = await tmdbFetch<MovieCredits>(`/movie/${credits}/credits?page=1`);
       return NextResponse.json(data, { headers: corsHeaders });
     }
 

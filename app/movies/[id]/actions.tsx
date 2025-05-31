@@ -13,13 +13,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-
-import { Movie, TMDBMovie } from '@/lib/types';
-import { transformMovie } from '@/lib/utils';
-import { api } from '@/convex/_generated/api';
-
-import { useMutation, useQuery } from 'convex/react';
-import { useScreen } from '@/hooks/screen';
 import {
   DialogClose,
   DialogContent,
@@ -31,32 +24,57 @@ import {
 } from '@/components/ui/dialog';
 import { Dialog } from '@/components/ui/dialog';
 import { useAppForm } from '@/hooks/form';
-import { useState } from 'react';
+
+import Link from 'next/link';
+import { Movie, TMDBMovie } from '@/lib/types';
+import { transformMovie } from '@/lib/utils';
+import { api } from '@/convex/_generated/api';
+
+import { useMutation, useQuery } from 'convex/react';
+import { useScreen } from '@/hooks/screen';
+import { useCallback, useEffect, useState } from 'react';
+import { useModifySearchParams } from '@/hooks/search-params';
 
 export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
+  const { searchParams, removeQueryParam } = useModifySearchParams();
+  const review = searchParams.get('review');
+  const watchlist = searchParams.get('watchlist');
+
   const addToWatchlist = useMutation(api.watchlist.add);
   const removeFromWatchlist = useMutation(api.watchlist.remove);
   const inWatchlist = useQuery(api.watchlist.inWatchlist, {
     externalId: id,
   });
 
-  const handleWatchlist = async (details?: Movie) => {
-    if (!details) {
-      return;
-    }
-    switch (inWatchlist) {
-      case true:
+  const handleWatchlist = useCallback(
+    async (details?: Movie) => {
+      if (!details) {
+        return;
+      }
+      if (inWatchlist) {
         return removeFromWatchlist({ externalId: Number(id) }).catch(e => {
           console.error(e);
         });
-      case false:
+      } else {
         return addToWatchlist(details).catch(e => {
           console.error(e);
         });
-      default:
-        return;
+      }
+    },
+    [inWatchlist, addToWatchlist, removeFromWatchlist, id],
+  );
+
+  useEffect(() => {
+    if (watchlist === 'true' && movie && typeof inWatchlist === 'boolean') {
+      if (inWatchlist) {
+        removeFromWatchlist({ externalId: Number(id) });
+      } else {
+        const entry = transformMovie(movie);
+        addToWatchlist(entry);
+      }
+      removeQueryParam('watchlist');
     }
-  };
+  }, [watchlist, movie, inWatchlist, removeQueryParam, removeFromWatchlist, addToWatchlist, id]);
 
   if (!movie) {
     return <MovieActionsSkeleton />;
@@ -78,7 +96,25 @@ export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
         >
           {inWatchlist ? 'Added to Watchlist' : 'Add to Watchlist'}
         </Button>
-        <ReviewAction movie={movie} />
+        <ReviewAction movie={movie} review={review === 'true'} />
+      </CardContent>
+    </Card>
+  );
+}
+
+export function UnauthenticatedMovieActions({ id }: { id: number }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Quick Actions</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <Button className="w-full" asChild>
+          <Link href={`/signin?redirect=/movies/${id}&watchlist=true`}>Login to add to watchlist</Link>
+        </Button>
+        <Button className="w-full" variant="secondary" asChild>
+          <Link href={`/signin?redirect=/movies/${id}&review=true`}>Login to write a review</Link>
+        </Button>
       </CardContent>
     </Card>
   );
@@ -98,10 +134,17 @@ function MovieActionsSkeleton() {
   );
 }
 
-function ReviewAction({ movie }: { movie: TMDBMovie }) {
+function ReviewAction({ movie, review }: { movie: TMDBMovie; review?: boolean }) {
+  const { removeQueryParam } = useModifySearchParams();
   const addEntry = useMutation(api.entries.add);
   const { isMobile } = useScreen();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(review || false);
+
+  useEffect(() => {
+    if (review) {
+      removeQueryParam('review');
+    }
+  }, [review, removeQueryParam]);
 
   const form = useAppForm({
     defaultValues: {

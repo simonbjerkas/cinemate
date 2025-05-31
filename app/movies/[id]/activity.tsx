@@ -12,7 +12,7 @@ export function MovieActivity({ movieId }: { movieId: number }) {
     external_id: movieId,
   });
 
-  if (!activity) {
+  if (!activity || activity.length === 0) {
     return null;
   }
 
