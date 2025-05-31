@@ -1,10 +1,14 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { EditorDiv } from '@/components/text-editor';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { api } from '@/convex/_generated/api';
+import { cn } from '@/lib/utils';
 import { useQuery } from 'convex/react';
+import { Star } from 'lucide-react';
 import Image from 'next/image';
 
 export function ActivitySection() {
@@ -13,10 +17,10 @@ export function ActivitySection() {
   return (
     <section className="mb-12">
       <h2 className="mb-6 text-2xl font-bold">Recent Activity</h2>
-      <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {recent ? (
           recent.map(activity => (
-            <Card key={activity._id}>
+            <Card className="max-w-xl" key={activity._id}>
               <CardHeader>
                 <Image
                   src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
@@ -25,12 +29,34 @@ export function ActivitySection() {
                   height={100}
                 />
                 <CardTitle>{activity.movie_title}</CardTitle>
-                <CardDescription>{activity._creationTime.toLocaleString()}</CardDescription>
+                <CardDescription>
+                  {new Date(activity._creationTime).toLocaleString('en-US', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
+                    hour12: false,
+                  })}
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <p>{activity.review}</p>
-                <p>{activity.rating}</p>
+              <Separator className="mx-auto max-w-11/12 opacity-45" />
+              <CardContent className="flex flex-col gap-2">
+                <EditorDiv>{activity.review}</EditorDiv>
+                <p className="flex flex-row gap-1">
+                  <span className="sr-only">{activity.rating}</span>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <Star
+                      key={star}
+                      className={cn(
+                        'hover:text-primary size-6 transition-colors',
+                        star <= (activity.rating ?? 0) ? 'fill-primary text-primary' : 'fill-none',
+                      )}
+                    />
+                  ))}
+                </p>
               </CardContent>
+              <Separator className="mx-auto max-w-11/12 opacity-45" />
+              <CardFooter className="text-muted-foreground text-sm">
+                <p>{activity.user_name}</p>
+              </CardFooter>
             </Card>
           ))
         ) : (

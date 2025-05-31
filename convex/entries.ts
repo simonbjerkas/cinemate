@@ -7,14 +7,15 @@ import { Id } from './_generated/dataModel';
 export const recent = query({
   args: {},
   handler: async ctx => {
-    const entries = await ctx.db.query('movie_entries').order('desc').take(5);
+    const entries = await ctx.db.query('movie_entries').order('desc').take(6);
     return Promise.all(
       entries.map(async entry => {
-        const movie = await ctx.db.get(entry.movie_id);
+        const [movie, user] = await Promise.all([ctx.db.get(entry.movie_id), ctx.db.get(entry.user_id)]);
         return {
           ...entry,
           movie_title: movie?.title,
           movie_poster: movie?.poster_path,
+          user_name: user?.name,
         };
       }),
     );

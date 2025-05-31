@@ -10,6 +10,9 @@ import Underline from '@tiptap/extension-underline';
 import { Bold as BoldIcon, Italic as ItalicIcon, Underline as UnderlineIcon } from 'lucide-react';
 import { Toggle } from './ui/toggle';
 
+import { useMemo } from 'react';
+import sanitizeHtml from 'sanitize-html';
+
 export const editorContentStyle = cn(
   'prose prose-sm',
   'prose-h1:text-xl prose-h1:pb-2 prose-h1:font-bold',
@@ -50,9 +53,9 @@ export const TextEditor = ({
       }),
       Underline,
     ],
-    content: value ?? '',
+    content: sanitizeHtml(value ?? ''),
     onUpdate: ({ editor }) => {
-      onChange?.(editor.getHTML());
+      onChange?.(sanitizeHtml(editor.getHTML()));
     },
     editorProps: {
       attributes: {
@@ -116,3 +119,13 @@ export const TextEditorMenu = ({ editor }: { editor: Editor }) => {
     </ul>
   );
 };
+
+export function EditorDiv({ children, className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+  const sanitizedBody = useMemo(() => {
+    return sanitizeHtml(children as string);
+  }, [children]);
+
+  return (
+    <div className={cn(editorContentStyle, className)} dangerouslySetInnerHTML={{ __html: sanitizedBody }} {...props} />
+  );
+}
