@@ -13,7 +13,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { TextEditor } from '@/components/text-editor';
 
 import { Movie, TMDBMovie } from '@/lib/types';
 import { transformMovie } from '@/lib/utils';
