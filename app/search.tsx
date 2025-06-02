@@ -9,7 +9,6 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Button } from '@/components/ui/button';
-import { Tmdb } from '@/components/tmdb';
 
 import { useDebounce } from '@/hooks/debounce';
 import { searchMovies } from '@/lib/api';
@@ -75,12 +74,9 @@ export function Search() {
                 <div className="border-primary size-4 animate-spin rounded-full border-2 border-t-transparent" />
               </div>
             ) : isFetched ? (
-              'No results found.'
+              <p className="text-muted-foreground">No results found.</p>
             ) : (
-              <div className="flex flex-col items-center justify-center gap-2">
-                <p className="text-sm">Movie search powered by</p>
-                <Tmdb className="w-32" />
-              </div>
+              <p className="text-muted-foreground">What are you looking for?</p>
             )}
           </CommandEmpty>
 
