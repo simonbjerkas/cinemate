@@ -39,7 +39,7 @@ export function Header() {
   return (
     <>
       <header className="border-border bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b backdrop-blur">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <div className="container mx-auto flex h-16 flex-row items-center justify-between gap-4 px-4">
           <Cinemate />
           <div className={cn('mx-4 max-w-xl flex-1', isMobile && 'flex justify-end')}>
             <Search />
@@ -117,6 +117,10 @@ const LINKS = [
   {
     label: 'Entries',
     href: '/entries',
+  },
+  {
+    label: 'About',
+    href: '/about',
   },
 ];
 

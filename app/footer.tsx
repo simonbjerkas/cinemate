@@ -30,6 +30,11 @@ export function Footer() {
                   People
                 </Link>
               </li>
+              <li>
+                <Link href="/about" className="text-muted-foreground hover:text-primary">
+                  About
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
