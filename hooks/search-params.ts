@@ -1,18 +1,18 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export function useModifySearchParams() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const oldSearchParams = useSearchParams();
   const pathname = usePathname();
+  const searchParams = useMemo(() => new URLSearchParams(oldSearchParams.toString()), [oldSearchParams]);
 
   const removeQueryParam = useCallback(
     (name: string) => {
-      const newParams = new URLSearchParams(searchParams.toString());
-      newParams.delete(name);
-      const newUrl = `${pathname}?${newParams.toString()}`;
+      searchParams.delete(name);
+      const newUrl = `${pathname}?${searchParams.toString()}`;
       router.replace(newUrl);
     },
     [pathname, searchParams, router],
@@ -20,9 +20,8 @@ export function useModifySearchParams() {
 
   const setQueryParam = useCallback(
     (name: string, value: string) => {
-      const newParams = new URLSearchParams(searchParams.toString());
-      newParams.set(name, value);
-      const newUrl = `${pathname}?${newParams.toString()}`;
+      searchParams.set(name, value);
+      const newUrl = `${pathname}?${searchParams.toString()}`;
       router.replace(newUrl);
     },
     [pathname, searchParams, router],
@@ -30,9 +29,8 @@ export function useModifySearchParams() {
 
   const updateQueryParam = useCallback(
     (name: string, value: string) => {
-      const newParams = new URLSearchParams(searchParams.toString());
-      newParams.set(name, value);
-      const newUrl = `${pathname}?${newParams.toString()}`;
+      searchParams.set(name, value);
+      const newUrl = `${pathname}?${searchParams.toString()}`;
       router.replace(newUrl);
     },
     [pathname, searchParams, router],

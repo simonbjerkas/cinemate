@@ -34,11 +34,11 @@ import { useMutation, useQuery } from 'convex/react';
 import { useScreen } from '@/hooks/screen';
 import { useCallback, useEffect, useState } from 'react';
 import { useModifySearchParams } from '@/hooks/search-params';
+import { useSearchParams } from 'next/navigation';
 
 export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
-  const { searchParams, removeQueryParam } = useModifySearchParams();
+  const searchParams = useSearchParams();
   const review = searchParams.get('review');
-  const watchlist = searchParams.get('watchlist');
 
   const addToWatchlist = useMutation(api.watchlist.add);
   const removeFromWatchlist = useMutation(api.watchlist.remove);
@@ -63,18 +63,6 @@ export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
     },
     [inWatchlist, addToWatchlist, removeFromWatchlist, id],
   );
-
-  useEffect(() => {
-    if (watchlist === 'true' && movie && typeof inWatchlist === 'boolean') {
-      if (inWatchlist) {
-        removeFromWatchlist({ externalId: Number(id) });
-      } else {
-        const entry = transformMovie(movie);
-        addToWatchlist(entry);
-      }
-      removeQueryParam('watchlist');
-    }
-  }, [watchlist, movie, inWatchlist, removeQueryParam, removeFromWatchlist, addToWatchlist, id]);
 
   if (!movie) {
     return <MovieActionsSkeleton />;
@@ -110,7 +98,7 @@ export function UnauthenticatedMovieActions({ id }: { id: number }) {
       </CardHeader>
       <CardContent className="space-y-2">
         <Button className="w-full" asChild>
-          <Link href={`/signin?redirect=/movies/${id}&watchlist=true`}>Login to add to watchlist</Link>
+          <Link href={`/signin?redirect=/movies/${id}`}>Login to add to watchlist</Link>
         </Button>
         <Button className="w-full" variant="secondary" asChild>
           <Link href={`/signin?redirect=/movies/${id}&review=true`}>Login to write a review</Link>
@@ -183,7 +171,7 @@ function ReviewAction({ movie, review }: { movie: TMDBMovie; review?: boolean })
               <DrawerTitle>Write a Review</DrawerTitle>
               <DrawerDescription>Write a review for {movie.title}</DrawerDescription>
             </DrawerHeader>
-            <div className="flex min-h-60 flex-1 flex-col gap-2 px-4">
+            <div className="flex min-h-80 flex-1 flex-col gap-2 px-4">
               <form.AppField
                 name="rating"
                 children={field => {

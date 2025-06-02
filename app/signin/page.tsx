@@ -9,13 +9,12 @@ import { useModifySearchParams } from '@/hooks/search-params';
 
 export default function SignIn() {
   const { signIn } = useAuthActions();
-  const { searchParams } = useModifySearchParams();
+  const { searchParams, removeQueryParam } = useModifySearchParams();
   const redirect = searchParams.get('redirect');
 
   const handleSignIn = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete('redirect');
-    const redirectTo = `${redirect || ''}${redirect ? '?' : ''}${params.toString()}`;
+    removeQueryParam('redirect');
+    const redirectTo = `${redirect || ''}${redirect ? '?' : ''}${searchParams.toString()}`;
     signIn('google', { redirectTo });
   };
 
