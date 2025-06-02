@@ -25,6 +25,7 @@ export function ActivitySection() {
                 <Image
                   src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
                   alt={activity.movie_title ?? ''}
+                  className="w-auto"
                   width={100}
                   height={100}
                 />
@@ -71,20 +72,27 @@ export function ActivitySection() {
 
 function ActivitySkeleton() {
   return (
-    <div className="flex flex-col gap-4">
+    <>
       {Array.from({ length: 4 }).map((_, index) => (
-        <Card key={index}>
-          <CardHeader>
-            <Skeleton className="mb-2 h-24 w-full max-w-[100px]" />
-            <Skeleton className="mb-2 h-6 w-3/4 max-w-[300px]" />
-            <Skeleton className="h-4 w-1/3 max-w-[200px]" />
+        <Card key={index} className="max-w-xl">
+          <CardHeader className="flex flex-row gap-4">
+            <Skeleton className="aspect-[2/3] h-36" />
+            <div className="flex flex-1 flex-col gap-2">
+              <Skeleton className="h-6 w-3/4 max-w-[300px]" />
+              <Skeleton className="h-4 w-1/3 max-w-[200px]" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <Skeleton className="mb-2 h-4 w-full max-w-[500px]" />
+          <Separator className="mx-auto max-w-11/12 opacity-45" />
+          <CardContent className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-full max-w-[500px]" />
             <Skeleton className="h-4 w-1/4 max-w-[100px]" />
           </CardContent>
+          <Separator className="mx-auto max-w-11/12 opacity-45" />
+          <CardFooter className="text-muted-foreground text-sm">
+            <Skeleton className="h-4 w-1/4 max-w-[100px]" />
+          </CardFooter>
         </Card>
       ))}
-    </div>
+    </>
   );
 }
