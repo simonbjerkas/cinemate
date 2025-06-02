@@ -55,6 +55,52 @@ export const add = mutation({
   },
 });
 
+export const updateEntry = mutation({
+  args: {
+    id: v.id('movie_entries'),
+    review: v.string(),
+    rating: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error('User not authenticated');
+    }
+    const entry = await ctx.db.get(args.id);
+    if (!entry) {
+      throw new Error('Entry not found');
+    }
+    if (entry.user_id !== userId) {
+      throw new Error('User does not have permission to update this entry');
+    }
+
+    return await ctx.db.patch(args.id, {
+      review: args.review,
+      rating: args.rating,
+    });
+  },
+});
+
+export const deleteEntry = mutation({
+  args: {
+    id: v.id('movie_entries'),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error('User not authenticated');
+    }
+    const entry = await ctx.db.get(args.id);
+    if (!entry) {
+      throw new Error('Entry not found');
+    }
+    if (entry.user_id !== userId) {
+      throw new Error('User does not have permission to delete this entry');
+    }
+    return await ctx.db.delete(args.id);
+  },
+});
+
 export const entriesByMovieAndUser = query({
   args: {
     external_id: v.number(),

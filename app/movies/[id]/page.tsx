@@ -1,12 +1,14 @@
 'use client';
 
 import { HeroSection } from './hero';
-import { MovieActions, UnauthenticatedMovieActions } from './actions';
+import { MovieActions } from './_actions';
+import { MovieCredits } from './credits';
 import { MovieDetails } from './details';
 import { MovieActivity } from './activity';
-import { MovieCredits } from './credits';
+import { UnauthenticatedMovieActions } from './_actions/unauthenticated';
 
 import { getMovieDetails } from '@/lib/api';
+import { transformMovie } from '@/lib/utils';
 import { api } from '@/convex/_generated/api';
 
 import { useQuery as useConvexQuery } from 'convex/react';
@@ -33,7 +35,11 @@ export default function MoviePage({ params }: MoviePageProps) {
       <HeroSection movie={movie} />
       <section className="grid gap-8 md:grid-cols-3">
         <MovieDetails movie={movie} />
-        {user ? <MovieActions id={Number(id)} movie={movie} /> : <UnauthenticatedMovieActions id={Number(id)} />}
+        {user ? (
+          <MovieActions movie={movie ? transformMovie(movie) : undefined} />
+        ) : (
+          <UnauthenticatedMovieActions id={Number(id)} />
+        )}
       </section>
       {user && <MovieActivity movieId={Number(id)} />}
       <MovieCredits movieId={Number(id)} />

@@ -1,8 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   Drawer,
   DrawerContent,
@@ -14,115 +12,26 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import {
-  DialogClose,
+  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from '@/components/ui/dialog';
-import { Dialog } from '@/components/ui/dialog';
+
 import { useAppForm } from '@/hooks/form';
-
-import Link from 'next/link';
-import { Movie, TMDBMovie } from '@/lib/types';
-import { transformMovie } from '@/lib/utils';
-import { api } from '@/convex/_generated/api';
-
-import { useMutation, useQuery } from 'convex/react';
-import { useScreen } from '@/hooks/screen';
-import { useCallback, useEffect, useState } from 'react';
 import { useModifySearchParams } from '@/hooks/search-params';
-import { useSearchParams } from 'next/navigation';
+import { useScreen } from '@/hooks/screen';
+import { useMutation } from 'convex/react';
+import { useEffect, useState } from 'react';
 
-export function MovieActions({ id, movie }: { id: number; movie?: TMDBMovie }) {
-  const searchParams = useSearchParams();
-  const review = searchParams.get('review');
+import { api } from '@/convex/_generated/api';
+import { Movie } from '@/lib/types';
 
-  const addToWatchlist = useMutation(api.watchlist.add);
-  const removeFromWatchlist = useMutation(api.watchlist.remove);
-  const inWatchlist = useQuery(api.watchlist.inWatchlist, {
-    externalId: id,
-  });
-
-  const handleWatchlist = useCallback(
-    async (details?: Movie) => {
-      if (!details) {
-        return;
-      }
-      if (inWatchlist) {
-        return removeFromWatchlist({ externalId: Number(id) }).catch(e => {
-          console.error(e);
-        });
-      } else {
-        return addToWatchlist(details).catch(e => {
-          console.error(e);
-        });
-      }
-    },
-    [inWatchlist, addToWatchlist, removeFromWatchlist, id],
-  );
-
-  if (!movie) {
-    return <MovieActionsSkeleton />;
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Quick Actions</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <Button
-          className="w-full"
-          variant={inWatchlist ? 'outline' : 'default'}
-          onClick={async () => {
-            const entry = transformMovie(movie);
-            await handleWatchlist(entry);
-          }}
-        >
-          {inWatchlist ? 'Added to Watchlist' : 'Add to Watchlist'}
-        </Button>
-        <ReviewAction movie={movie} review={review === 'true'} />
-      </CardContent>
-    </Card>
-  );
-}
-
-export function UnauthenticatedMovieActions({ id }: { id: number }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Quick Actions</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <Button className="w-full" asChild>
-          <Link href={`/signin?redirect=/movies/${id}`}>Login to add to watchlist</Link>
-        </Button>
-        <Button className="w-full" variant="secondary" asChild>
-          <Link href={`/signin?redirect=/movies/${id}&review=true`}>Login to write a review</Link>
-        </Button>
-      </CardContent>
-    </Card>
-  );
-}
-
-function MovieActionsSkeleton() {
-  return (
-    <Card>
-      <CardHeader>
-        <Skeleton className="h-6 w-32" />
-      </CardHeader>
-      <CardContent className="space-y-2">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-      </CardContent>
-    </Card>
-  );
-}
-
-function ReviewAction({ movie, review }: { movie: TMDBMovie; review?: boolean }) {
+export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean }) {
   const { removeQueryParam } = useModifySearchParams();
   const addEntry = useMutation(api.entries.add);
   const { isMobile } = useScreen();
@@ -140,8 +49,7 @@ function ReviewAction({ movie, review }: { movie: TMDBMovie; review?: boolean })
       review: '',
     },
     onSubmit: async ({ value }) => {
-      const entry = transformMovie(movie);
-      await addEntry({ ...entry, rating: value.rating, review: value.review })
+      await addEntry({ ...movie, rating: value.rating, review: value.review })
         .then(() => {
           setOpen(false);
         })
