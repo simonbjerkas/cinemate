@@ -25,11 +25,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Cinemate',
-  description: 'Cinemate is a platform for discovering and sharing movies',
-  icons: {
-    icon: '/cinemate.svg',
+  title: {
+    template: '%s | Cinemate',
+    default: 'Cinemate',
   },
+  description: 'Cinemate is a platform for discovering and sharing movies',
 };
 
 export default function RootLayout({

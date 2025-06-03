@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - Cinemate',
+  title: 'Terms of Service',
   description: 'Terms of Service for Cinemate - Your Movie Tracking Platform',
 };
 

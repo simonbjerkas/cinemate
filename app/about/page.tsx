@@ -9,7 +9,7 @@ import { Logo } from '@/components/cinemate';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'About - Cinemate',
+  title: 'About',
   description: 'Learn more about Cinemate - Your Movie Tracking Platform',
 };
 

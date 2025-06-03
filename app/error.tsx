@@ -1,8 +1,15 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+
+import { Metadata } from 'next';
+
 import { useEffect } from 'react';
 
-import { Button } from '@/components/ui/button';
+export const metadata: Metadata = {
+  title: 'Error',
+  description: 'An unexpected error occurred',
+};
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {

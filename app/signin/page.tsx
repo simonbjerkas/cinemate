@@ -6,6 +6,12 @@ import { Logo } from '@/components/cinemate';
 
 import { useAuthActions } from '@convex-dev/auth/react';
 import { useModifySearchParams } from '@/hooks/search-params';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Sign in',
+  description: 'Sign in to your account',
+};
 
 export default function SignIn() {
   const { signIn } = useAuthActions();
