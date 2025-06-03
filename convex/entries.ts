@@ -1,6 +1,8 @@
+import sanitizeHtml from 'sanitize-html';
+
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
 import { getAuthUserId } from '@convex-dev/auth/server';
+import { mutation, query } from './_generated/server';
 import { internal } from './_generated/api';
 import { Id } from './_generated/dataModel';
 
@@ -74,8 +76,10 @@ export const updateEntry = mutation({
       throw new Error('User does not have permission to update this entry');
     }
 
+    const sanitizedReview = sanitizeHtml(args.review);
+
     return await ctx.db.patch(args.id, {
-      review: args.review,
+      review: sanitizedReview,
       rating: args.rating,
     });
   },

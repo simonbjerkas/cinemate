@@ -107,7 +107,7 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
               <DrawerTitle>Write a Review</DrawerTitle>
               <DrawerDescription>Write a review for {movieTitle}</DrawerDescription>
             </DrawerHeader>
-            <div className="flex min-h-80 flex-1 flex-col gap-2 px-4">
+            <div className="flex flex-1 flex-col gap-2 px-4">
               <form.AppField
                 name="rating"
                 children={field => {
