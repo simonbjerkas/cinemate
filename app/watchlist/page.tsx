@@ -1,9 +1,6 @@
 'use client';
 
 import { MovieCard } from '@/components/movie-card';
-import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { api } from '@/convex/_generated/api';
@@ -16,24 +13,6 @@ export default function WatchlistPage() {
     <div className="py-8">
       <h1 className="text-2xl font-bold">Watchlist</h1>
       <p className="text-muted-foreground text-sm">Your saved movies</p>
-      <Drawer>
-        <DrawerTrigger asChild>
-          <Button>Add to watchlist</Button>
-        </DrawerTrigger>
-        <DrawerContent className="h-full max-w-md">
-          <DrawerHeader>
-            <DrawerTitle>Add to watchlist</DrawerTitle>
-          </DrawerHeader>
-          <div className="flex h-full flex-col gap-2 p-4">
-            <p className="text-sm font-medium">Search for a movie</p>
-            <Input placeholder="Search for a movie" />
-          </div>
-          <DrawerFooter>
-            <Button>Add to watchlist</Button>
-            <Button variant="outline">Cancel</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
       {!movies ? (
         <WatchlistSkeleton />
       ) : movies.length === 0 ? (
