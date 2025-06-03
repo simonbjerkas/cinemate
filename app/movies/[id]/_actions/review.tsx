@@ -97,7 +97,7 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent>
           <form
-            className="mx-auto flex w-full max-w-2xl flex-col overflow-y-auto"
+            // className="mx-auto flex w-full max-w-2xl flex-col overflow-y-auto"
             onSubmit={e => {
               e.preventDefault();
               form.handleSubmit();
@@ -107,7 +107,9 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
               <DrawerTitle>Write a Review</DrawerTitle>
               <DrawerDescription>Write a review for {movieTitle}</DrawerDescription>
             </DrawerHeader>
-            <div className="flex h-80 flex-col gap-2 px-4">
+            <div
+            // className="flex h-80 flex-col gap-2 px-4"
+            >
               <form.AppField
                 name="rating"
                 children={field => {
