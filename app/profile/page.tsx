@@ -11,12 +11,6 @@ import { api } from '@/convex/_generated/api';
 
 import { useQuery } from 'convex/react';
 import { useState } from 'react';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Profile',
-  description: 'Your profile',
-};
 
 export default function ProfilePage() {
   const user = useQuery(api.users.getUser);

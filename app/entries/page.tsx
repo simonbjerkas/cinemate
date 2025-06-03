@@ -9,12 +9,6 @@ import { useQuery } from 'convex/react';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Watched Movies',
-  description: 'Your watched movies',
-};
 
 export default function EntriesPage() {
   const entries = useQuery(api.entries.getEntries);
