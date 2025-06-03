@@ -5,12 +5,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import { api } from '@/convex/_generated/api';
 import { useQuery } from 'convex/react';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Watchlist',
-  description: 'Your saved movies',
-};
 
 export default function WatchlistPage() {
   const movies = useQuery(api.watchlist.getWatchlist);
@@ -22,7 +16,10 @@ export default function WatchlistPage() {
       {!movies ? (
         <WatchlistSkeleton />
       ) : movies.length === 0 ? (
-        <div>No movies in watchlist</div>
+        <div className="mt-8 flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+          <p className="text-lg font-medium">Your watchlist is empty</p>
+          <p className="text-muted-foreground mt-2 text-sm">Add movies to your watchlist to see them here</p>
+        </div>
       ) : (
         <div className="my-4 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
           {movies.map(movie => (
