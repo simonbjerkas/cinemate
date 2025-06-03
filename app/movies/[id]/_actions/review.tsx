@@ -95,43 +95,39 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerContent>
+        <DrawerContent className="z-[60]">
+          <DrawerHeader>
+            <DrawerTitle>Write a Review</DrawerTitle>
+            <DrawerDescription>Write a review for {movieTitle}</DrawerDescription>
+          </DrawerHeader>
           <form
-            // className="mx-auto flex w-full max-w-2xl flex-col overflow-y-auto"
+            className="flex flex-col gap-2 px-4"
             onSubmit={e => {
               e.preventDefault();
               form.handleSubmit();
             }}
           >
-            <DrawerHeader>
-              <DrawerTitle>Write a Review</DrawerTitle>
-              <DrawerDescription>Write a review for {movieTitle}</DrawerDescription>
-            </DrawerHeader>
-            <div
-            // className="flex h-80 flex-col gap-2 px-4"
-            >
-              <form.AppField
-                name="rating"
-                children={field => {
-                  return <field.StarRatingField label="Rating" />;
-                }}
-              />
-              <form.AppField
-                name="review"
-                children={field => {
-                  return <field.TextEditorField label="Review" />;
-                }}
-              />
-            </div>
-            <DrawerFooter>
-              <form.AppForm>
-                <form.SubscribeButton label="Submit" />
-              </form.AppForm>
-              <DrawerClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DrawerClose>
-            </DrawerFooter>
+            <form.AppField
+              name="rating"
+              children={field => {
+                return <field.StarRatingField label="Rating" />;
+              }}
+            />
+            <form.AppField
+              name="review"
+              children={field => {
+                return <field.TextEditorField label="Review" />;
+              }}
+            />
           </form>
+          <DrawerFooter>
+            <form.AppForm>
+              <form.SubscribeButton label="Submit" />
+            </form.AppForm>
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     );
