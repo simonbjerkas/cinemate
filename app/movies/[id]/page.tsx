@@ -41,7 +41,7 @@ export default function MoviePage({ params }: MoviePageProps) {
           <UnauthenticatedMovieActions id={Number(id)} />
         )}
       </section>
-      {user && <MovieActivity movieId={Number(id)} />}
+      {user && <MovieActivity movieId={Number(id)} movieTitle={movie?.title || ''} />}
       <MovieCredits movieId={Number(id)} />
     </div>
   );

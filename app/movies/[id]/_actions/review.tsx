@@ -9,7 +9,6 @@ import {
   DrawerHeader,
   DrawerClose,
   DrawerTitle,
-  DrawerTrigger,
 } from '@/components/ui/drawer';
 import {
   Dialog,
@@ -18,7 +17,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
 
@@ -34,7 +32,6 @@ import { Movie } from '@/lib/types';
 export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean }) {
   const { removeQueryParam } = useModifySearchParams();
   const addEntry = useMutation(api.entries.add);
-  const { isMobile } = useScreen();
   const [open, setOpen] = useState(review || false);
 
   useEffect(() => {
@@ -43,13 +40,49 @@ export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean
     }
   }, [review, removeQueryParam]);
 
+  const handleSubmit = async (args: { rating: number; review: string }) => {
+    await addEntry({
+      title: movie.title,
+      external_id: movie.external_id,
+      poster_path: movie.poster_path,
+      release_date: movie.release_date,
+      ...args,
+    });
+  };
+
+  return (
+    <>
+      <Button variant="secondary" className="w-full" onClick={() => setOpen(true)}>
+        Write a Review
+      </Button>
+      <ReviewForm open={open} setOpen={setOpen} movieTitle={movie.title} onSubmit={handleSubmit} />
+    </>
+  );
+}
+
+interface ReviewFormProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  movieTitle: string;
+  onSubmit: (args: { rating: number; review: string }) => Promise<void>;
+  defaultValues?: {
+    rating: number;
+    review: string;
+  };
+}
+
+export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues }: ReviewFormProps) => {
+  const { isMobile } = useScreen();
   const form = useAppForm({
     defaultValues: {
-      rating: 0,
-      review: '',
+      rating: defaultValues?.rating || 0,
+      review: defaultValues?.review || '',
     },
     onSubmit: async ({ value }) => {
-      await addEntry({ ...movie, rating: value.rating, review: value.review })
+      await onSubmit({
+        rating: value.rating,
+        review: value.review,
+      })
         .then(() => {
           setOpen(false);
         })
@@ -62,14 +95,9 @@ export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>
-          <Button variant="secondary" className="w-full">
-            Write a Review
-          </Button>
-        </DrawerTrigger>
         <DrawerContent className="h-full">
           <form
-            className="mx-auto flex h-full w-full max-w-2xl flex-col"
+            className="mx-auto flex w-full max-w-2xl flex-col overflow-y-auto"
             onSubmit={e => {
               e.preventDefault();
               form.handleSubmit();
@@ -77,7 +105,7 @@ export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean
           >
             <DrawerHeader>
               <DrawerTitle>Write a Review</DrawerTitle>
-              <DrawerDescription>Write a review for {movie.title}</DrawerDescription>
+              <DrawerDescription>Write a review for {movieTitle}</DrawerDescription>
             </DrawerHeader>
             <div className="flex min-h-80 flex-1 flex-col gap-2 px-4">
               <form.AppField
@@ -109,14 +137,9 @@ export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="secondary" className="w-full">
-          Write a Review
-        </Button>
-      </DialogTrigger>
       <DialogContent>
         <form
-          className="flex flex-col gap-4"
+          className="mx-auto flex w-full max-w-md flex-col gap-4"
           onSubmit={e => {
             e.preventDefault();
             form.handleSubmit();
@@ -124,7 +147,7 @@ export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean
         >
           <DialogHeader>
             <DialogTitle>Write a Review</DialogTitle>
-            <DialogDescription>Write a review for {movie.title}</DialogDescription>
+            <DialogDescription>Write a review for {movieTitle}</DialogDescription>
           </DialogHeader>
 
           <div className="flex h-96 flex-col gap-2">
@@ -153,4 +176,4 @@ export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean
       </DialogContent>
     </Dialog>
   );
-}
+};

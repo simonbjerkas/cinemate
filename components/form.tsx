@@ -26,7 +26,7 @@ export function TextEditorField({ label, menubar = true }: { label: string; menu
   const field = useFieldContext<string>();
   const editorId = `editor-${label.toLowerCase().replace(/\s+/g, '-')}`;
   return (
-    <div className="flex size-full flex-col items-start gap-2">
+    <div className="flex size-full flex-col items-start gap-2 overflow-y-auto">
       <Label htmlFor={editorId}>{label}</Label>
       <TextEditor
         name={editorId}

@@ -80,3 +80,5 @@ export interface CrewMember extends MoviePerson {
 
 // Local movie type
 export type Movie = Omit<Doc<'movies'>, '_id' | '_creationTime' | 'last_updated'>;
+
+export type Entry = Doc<'movie_entries'>;
