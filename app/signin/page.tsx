@@ -14,7 +14,9 @@ export default function SignIn() {
 
   const handleSignIn = () => {
     removeQueryParam('redirect');
-    const redirectTo = `${redirect || ''}${redirect ? '?' : ''}${searchParams.toString()}`;
+    const redirectTo = redirect
+      ? redirect + (searchParams.toString() ? '?' + searchParams.toString() : '')
+      : '/' + (searchParams.toString() ? '?' + searchParams.toString() : '');
     signIn('google', { redirectTo });
   };
 
