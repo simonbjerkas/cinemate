@@ -1,7 +1,10 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Movies',
+  title: {
+    template: '%s | Cinemate',
+    default: 'Movies',
+  },
   description: 'Popular movies right now',
 };
 
