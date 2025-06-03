@@ -8,48 +8,36 @@ export type CookiePreferences = {
 
 const COOKIE_CONSENT_KEY = 'cookie-consent';
 
-export function getCookiePreferences(): CookiePreferences {
+export function getCookiePreferences(): CookiePreferences | null {
   if (typeof window === 'undefined') {
-    return {
-      necessary: true,
-      analytics: false,
-      marketing: false,
-    };
+    return null;
   }
 
   const stored = localStorage.getItem(COOKIE_CONSENT_KEY);
   if (!stored) {
-    return {
-      necessary: true,
-      analytics: false,
-      marketing: false,
-    };
+    return null;
   }
 
   try {
     return JSON.parse(stored) as CookiePreferences;
   } catch {
-    return {
-      necessary: true,
-      analytics: false,
-      marketing: false,
-    };
+    return null;
   }
 }
 
 export function hasAcceptedCookies(): boolean {
   const preferences = getCookiePreferences();
-  return preferences.necessary && (preferences.analytics || preferences.marketing);
+  return (preferences?.necessary && (preferences?.analytics || preferences?.marketing)) || false;
 }
 
 export function canUseAnalytics(): boolean {
   const preferences = getCookiePreferences();
-  return preferences.analytics;
+  return preferences?.analytics || false;
 }
 
 export function canUseMarketing(): boolean {
   const preferences = getCookiePreferences();
-  return preferences.marketing;
+  return preferences?.marketing || false;
 }
 
 // Function to initialize analytics (e.g., Google Analytics)
@@ -76,13 +64,13 @@ export function initializeMarketing() {
 export function clearNonNecessaryCookies() {
   const preferences = getCookiePreferences();
 
-  if (!preferences.analytics) {
+  if (!preferences?.analytics) {
     // Clear analytics cookies
     // Example:
     // document.cookie = '_ga=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
 
-  if (!preferences.marketing) {
+  if (!preferences?.marketing) {
     // Clear marketing cookies
     // Example:
     // document.cookie = '_fbp=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';

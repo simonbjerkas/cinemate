@@ -167,7 +167,7 @@ function MobileNavbar() {
   return (
     <>
       <Button
-        className="fixed right-4 bottom-4 z-[100] rounded-full shadow-lg"
+        className="fixed right-4 bottom-4 z-[60] rounded-full shadow-lg"
         variant="default"
         size="icon"
         onClick={() => setIsOpen(!isOpen)}

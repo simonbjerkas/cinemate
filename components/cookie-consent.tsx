@@ -98,7 +98,7 @@ export function CookieConsent() {
     <>
       <div
         className={cn(
-          'bg-background fixed right-0 bottom-0 left-0 z-50 border-t p-4 shadow-lg',
+          'bg-background fixed right-0 bottom-0 left-0 z-[100] border-t p-4 shadow-lg',
           'animate-in slide-in-from-bottom duration-300',
         )}
       >
