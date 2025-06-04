@@ -28,9 +28,6 @@ import { useEffect, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import { Movie } from '@/lib/types';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 
 export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean }) {
   const { removeQueryParam } = useModifySearchParams();
@@ -97,8 +94,8 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={setOpen}>
-        {/* <DrawerContent className="z-[60]">
+      <Drawer open={open} onOpenChange={setOpen} repositionInputs={false}>
+        <DrawerContent className="z-[60]">
           <DrawerHeader>
             <DrawerTitle>Write a Review</DrawerTitle>
             <DrawerDescription>Write a review for {movieTitle}</DrawerDescription>
@@ -119,7 +116,7 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
             <form.AppField
               name="review"
               children={field => {
-                return <field.TextField label="Review" />;
+                return <field.TextEditorField label="Review" />;
               }}
             />
           </form>
@@ -127,19 +124,6 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
             <form.AppForm>
               <form.SubscribeButton label="Submit" />
             </form.AppForm>
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent> */}
-
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>Edit profile</DrawerTitle>
-            <DrawerDescription>Make changes to your profile here. Click save when you&apos;re done.</DrawerDescription>
-          </DrawerHeader>
-          <ProfileForm className="px-4" />
-          <DrawerFooter className="pt-2">
             <DrawerClose asChild>
               <Button variant="outline">Cancel</Button>
             </DrawerClose>
@@ -191,19 +175,3 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
     </Dialog>
   );
 };
-
-function ProfileForm({ className }: React.ComponentProps<'form'>) {
-  return (
-    <form className={cn('grid items-start gap-6', className)}>
-      <div className="grid gap-3">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" defaultValue="shadcn@example.com" />
-      </div>
-      <div className="grid gap-3">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" defaultValue="@shadcn" />
-      </div>
-      <Button type="submit">Save changes</Button>
-    </form>
-  );
-}
