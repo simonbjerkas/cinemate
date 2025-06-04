@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { useQuery } from 'convex/react';
 import { Star } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export function ActivitySection() {
   const recent = useQuery(api.entries.recent);
@@ -22,13 +23,15 @@ export function ActivitySection() {
           recent.map(activity => (
             <Card className="max-w-xl" key={activity._id}>
               <CardHeader className="flex flex-row gap-4">
-                <Image
-                  src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
-                  alt={activity.movie_title ?? ''}
-                  className="w-auto"
-                  width={100}
-                  height={100}
-                />
+                <Link href={`/movies/${activity.movie_external_id}`}>
+                  <Image
+                    src={`https://image.tmdb.org/t/p/original/${activity.movie_poster}`}
+                    alt={activity.movie_title ?? ''}
+                    className="w-auto"
+                    width={100}
+                    height={100}
+                  />
+                </Link>
                 <div className="flex flex-col gap-2">
                   <CardTitle>{activity.movie_title}</CardTitle>
                   <CardDescription>

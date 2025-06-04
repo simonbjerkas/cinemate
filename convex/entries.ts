@@ -17,6 +17,7 @@ export const recent = query({
           ...entry,
           movie_title: movie?.title,
           movie_poster: movie?.poster_path,
+          movie_external_id: movie?.external_id,
           user_name: user?.name,
         };
       }),
