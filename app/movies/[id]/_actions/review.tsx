@@ -116,7 +116,7 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
             <form.AppField
               name="review"
               children={field => {
-                return <field.TextEditorField label="Review" />;
+                return <field.TextField label="Review" />;
               }}
             />
           </form>
