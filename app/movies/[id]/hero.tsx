@@ -21,7 +21,7 @@ export function HeroSection({ movie }: { movie?: TMDBMovie }) {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
         <div className="absolute right-0 bottom-0 left-0 p-8">
-          <div className="flex items-end gap-8">
+          <div className="flex items-end gap-2 sm:gap-4 md:gap-8">
             <div className="relative h-48 w-32 flex-shrink-0 overflow-hidden rounded-lg">
               <Image
                 src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
@@ -32,7 +32,7 @@ export function HeroSection({ movie }: { movie?: TMDBMovie }) {
               />
             </div>
             <div>
-              <h1 className="mb-2 text-4xl font-bold text-white">
+              <h1 className="mb-2 text-2xl font-bold text-white sm:text-4xl">
                 {movie.title} ({movie.release_date.split('-')[0]})
               </h1>
             </div>
@@ -52,7 +52,7 @@ function HeroSkeleton() {
           <div className="flex items-end gap-8">
             <Skeleton className="h-48 w-32 flex-shrink-0 rounded-lg" />
             <div className="flex-1">
-              <Skeleton className="mb-2 h-8 w-64" />
+              <Skeleton className="mb-2 h-8 w-full max-w-64" />
               <Skeleton className="h-4 w-32" />
             </div>
           </div>
