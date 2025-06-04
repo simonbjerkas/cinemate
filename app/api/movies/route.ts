@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { MovieCredits, MovieDetails, MovieSearchResponse } from '@/lib/types';
+import { MovieCredits, MovieDetails, MovieProviderResponse, MovieSearchResponse } from '@/lib/types';
 import { handleCors } from '@/lib/api/cors';
 import { tmdbFetch } from '@/lib/api/utils';
 
@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   const credits = searchParams.get('credits');
   const popular = searchParams.get('popular');
   const trending = searchParams.get('trending');
+  const providers = searchParams.get('providers');
 
   try {
     if (id) {
@@ -42,6 +43,12 @@ export async function GET(request: NextRequest) {
     if (trending) {
       // Get trending movies
       const data = await tmdbFetch<MovieSearchResponse>(`/trending/movie/day?page=1`);
+      return NextResponse.json(data, { headers: corsHeaders });
+    }
+
+    if (providers) {
+      // Get movie providers
+      const data = await tmdbFetch<MovieProviderResponse>(`/movie/${providers}/watch/providers`);
       return NextResponse.json(data, { headers: corsHeaders });
     }
 

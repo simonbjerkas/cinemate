@@ -78,6 +78,25 @@ export interface CrewMember extends MoviePerson {
   job: string;
 }
 
+export interface MovieProviderResponse {
+  id: number;
+  results: {
+    [key: string]: {
+      link: string;
+      flatrate?: Provider[];
+      rent?: Provider[];
+      buy?: Provider[];
+    };
+  };
+}
+
+interface Provider {
+  logo_path: string;
+  provider_id: number;
+  provider_name: string;
+  display_priority: number;
+}
+
 // Local movie type
 export type Movie = Omit<Doc<'movies'>, '_id' | '_creationTime' | 'last_updated'>;
 
