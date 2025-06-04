@@ -101,7 +101,7 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
             <DrawerDescription>Write a review for {movieTitle}</DrawerDescription>
           </DrawerHeader>
           <form
-            className="flex flex-col gap-2 overflow-y-auto px-4"
+            className="flex flex-col gap-2 px-4"
             onSubmit={e => {
               e.preventDefault();
               form.handleSubmit();
