@@ -3,11 +3,11 @@
 import { EditorDiv } from '@/components/text-editor';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 import { api } from '@/convex/_generated/api';
 import { useQuery } from 'convex/react';
 import { EditAction } from './_actions/edit';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 export function MovieActivity({ movieId, movieTitle }: { movieId: number; movieTitle: string }) {
   const activity = useQuery(api.entries.entriesByMovieAndUser, {

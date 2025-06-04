@@ -32,7 +32,7 @@ export default function MoviePage({ params }: MoviePageProps) {
 
   return (
     <div className="flex flex-col gap-8 py-8">
-      <HeroSection movie={movie} />
+      <HeroSection movie={movie} movieId={Number(id)} />
       <section className="grid gap-8 md:grid-cols-3">
         <MovieDetails movie={movie} />
         {user ? (
