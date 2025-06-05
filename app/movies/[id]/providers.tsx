@@ -1,13 +1,15 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { getMovieProviders } from '@/lib/api';
-import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+
+import { getMovieProviders } from '@/lib/api';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { useQuery } from '@tanstack/react-query';
 
 export function ProvidersSection({ movieId, locale }: { movieId: number; locale: string[] }) {
   const { data: providers, isLoading } = useQuery({

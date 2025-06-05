@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +10,7 @@ import { api } from '@/convex/_generated/api';
 
 import { useQuery } from 'convex/react';
 import { useState } from 'react';
+import { redirect } from 'next/navigation';
 
 export default function ProfilePage() {
   const user = useQuery(api.users.getUser);
@@ -19,24 +19,7 @@ export default function ProfilePage() {
   const [editedEmail, setEditedEmail] = useState('');
 
   if (!user) {
-    return (
-      <div className="container mx-auto py-8">
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-8 w-48" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-20 w-20 rounded-full" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return redirect('/login');
   }
 
   const handleUpdateProfile = () => {
