@@ -76,3 +76,10 @@ export function clearNonNecessaryCookies() {
     // document.cookie = '_fbp=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
 }
+
+export function setCookiePreferences(preferences: CookiePreferences) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(preferences));
+}

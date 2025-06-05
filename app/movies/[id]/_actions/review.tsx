@@ -28,6 +28,7 @@ import { useEffect, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import { Movie } from '@/lib/types';
+import { z } from 'zod';
 
 export function ReviewAction({ movie, review }: { movie: Movie; review?: boolean }) {
   const { removeQueryParam } = useModifySearchParams();
@@ -77,6 +78,12 @@ export const ReviewForm = ({ open, setOpen, movieTitle, onSubmit, defaultValues 
     defaultValues: {
       rating: defaultValues?.rating || 0,
       review: defaultValues?.review || '',
+    },
+    validators: {
+      onChange: z.object({
+        rating: z.number().min(1).max(5),
+        review: z.string().min(0),
+      }),
     },
     onSubmit: async ({ value }) => {
       await onSubmit({
