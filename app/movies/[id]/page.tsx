@@ -45,7 +45,7 @@ export default function MoviePage({ params }: MoviePageProps) {
       </section>
       <section className={cn(user && 'grid gap-8 md:grid-cols-2')}>
         {user && <MovieActivity movieId={movieId} movieTitle={movie?.title || ''} />}
-        <ProvidersSection movieId={movieId} />
+        <ProvidersSection movieId={movieId} locale={user?.provider_locale || ['US']} />
       </section>
       <MovieCredits movieId={movieId} />
     </div>

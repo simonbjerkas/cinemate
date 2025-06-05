@@ -6,22 +6,18 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Separator } from '@/components/ui/separator';
 
-export function ProvidersSection({ movieId }: { movieId: number }) {
+export function ProvidersSection({ movieId, locale }: { movieId: number; locale: string[] }) {
   const { data: providers, isLoading } = useQuery({
     queryKey: ['movie-providers', movieId],
-    queryFn: () => getMovieProviders({ movieId, countries: ['US'] }),
+    queryFn: () => getMovieProviders({ movieId, countries: locale }),
   });
 
   if (isLoading) {
     return <ProvidersSkeleton />;
   }
-
-  if (!providers?.length || !providers[0].flatrate?.length) {
-    return null;
-  }
-
-  console.log(providers);
 
   return (
     <Card>
@@ -35,27 +31,93 @@ export function ProvidersSection({ movieId }: { movieId: number }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {providers.map(country => (
+        {providers?.map((country, index) => (
           <div key={country.locale} className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium">{country.locale}</h3>
+            <h3 className="text-sm font-medium">Availability in {country.locale}</h3>
             <div className="flex flex-wrap gap-4">
-              {country.flatrate?.map(provider => (
-                <div key={provider.provider_id} className="flex flex-col items-center gap-2">
-                  <Link href={country.link} target="_blank">
-                    <div className="relative h-16 w-16 overflow-hidden rounded-lg">
-                      <Image
-                        src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
-                        alt={provider.provider_name}
-                        fill
-                        sizes="100px"
-                        className="object-contain"
-                      />
-                    </div>
-                  </Link>
-                  <span className="text-muted-foreground text-sm">{provider.provider_name}</span>
-                </div>
-              ))}
+              {country.flatrate && country.flatrate.length > 0 ? (
+                country.flatrate?.map(provider => (
+                  <div key={provider.provider_id} className="flex flex-col items-center gap-2">
+                    <Link href={country.link} target="_blank">
+                      <div className="relative h-16 w-16 overflow-hidden rounded-lg">
+                        <Image
+                          src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+                          alt={provider.provider_name}
+                          fill
+                          sizes="100px"
+                          className="object-contain"
+                        />
+                      </div>
+                    </Link>
+                    <span className="text-muted-foreground text-sm">{provider.provider_name}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm">Not available for streaming</p>
+              )}
             </div>
+            <Accordion type="multiple">
+              <AccordionItem value="buy">
+                <AccordionTrigger>Buy</AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-wrap gap-4">
+                    {country.buy && country.buy.length > 0 ? (
+                      country.buy?.map(provider => (
+                        <div key={provider.provider_id} className="flex flex-col items-center gap-2">
+                          <Link href={country.link} target="_blank">
+                            <div className="relative h-16 w-16 overflow-hidden rounded-lg">
+                              <Image
+                                src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+                                alt={provider.provider_name}
+                                fill
+                                sizes="100px"
+                                className="object-contain"
+                              />
+                            </div>
+                          </Link>
+                          <span className="text-muted-foreground text-sm">{provider.provider_name}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-muted-foreground text-sm">Not available for purchase</p>
+                    )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="rent">
+                <AccordionTrigger>Rent</AccordionTrigger>
+                <AccordionContent>
+                  {providers?.map(country => (
+                    <div key={country.locale}>
+                      <h3 className="text-sm font-medium">{country.locale}</h3>
+                      <div className="flex flex-wrap gap-4">
+                        {country.rent && country.rent.length > 0 ? (
+                          country.rent?.map(provider => (
+                            <div key={provider.provider_id} className="flex flex-col items-center gap-2">
+                              <Link href={country.link} target="_blank">
+                                <div className="relative size-16 overflow-hidden rounded-lg">
+                                  <Image
+                                    src={`https://image.tmdb.org/t/p/original${provider.logo_path}`}
+                                    alt={provider.provider_name}
+                                    fill
+                                    sizes="100px"
+                                    className="object-contain"
+                                  />
+                                </div>
+                              </Link>
+                              <span className="text-muted-foreground text-sm">{provider.provider_name}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-muted-foreground text-sm">Not available for rental</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            {index !== providers.length - 1 && <Separator className="bg-accent/40 mb-4" />}
           </div>
         ))}
       </CardContent>

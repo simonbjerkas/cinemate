@@ -4,6 +4,14 @@ import { authTables } from '@convex-dev/auth/server';
 
 export default defineSchema({
   ...authTables,
+
+  users: defineTable({
+    name: v.optional(v.string()),
+    image: v.optional(v.string()),
+    email: v.optional(v.string()),
+    provider_locale: v.optional(v.array(v.string())),
+  }).index('email', ['email']),
+
   movies: defineTable({
     title: v.string(),
     poster_path: v.optional(v.string()),
