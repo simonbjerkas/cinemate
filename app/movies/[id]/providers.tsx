@@ -130,15 +130,26 @@ function ProvidersSkeleton() {
     <Card>
       <CardHeader>
         <Skeleton className="h-6 w-32" />
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-8 w-24" />
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex flex-col items-center gap-2">
-              <Skeleton className="h-16 w-16 rounded-lg" />
-              <Skeleton className="h-4 w-20" />
-            </div>
-          ))}
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-5 w-48" />
+          <div className="flex flex-wrap gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <Skeleton className="h-16 w-16 rounded-lg" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+            ))}
+          </div>
+          <div className="mt-2">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="mt-2 h-10 w-full" />
+          </div>
         </div>
       </CardContent>
     </Card>
