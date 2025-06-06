@@ -61,7 +61,7 @@ export function ActivitySection() {
               </CardContent>
               <Separator className="mx-auto max-w-11/12 opacity-45" />
               <CardFooter className="text-muted-foreground text-sm">
-                <p>{activity.user_name}</p>
+                <p>{activity.profile_name}</p>
               </CardFooter>
             </Card>
           ))

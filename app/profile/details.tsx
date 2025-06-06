@@ -5,19 +5,20 @@ import { Label } from '@/components/ui/label';
 
 import { useState } from 'react';
 import { useAppForm } from '@/hooks/form';
+import { useMutation } from 'convex/react';
+import { useConvexQuery } from '@/hooks/convex';
 
-import { User } from '@/lib/types';
 import { z } from 'zod';
 import { api } from '@/convex/_generated/api';
-import { useMutation } from 'convex/react';
 
-export function ProfileDetails({ user }: { user: User }) {
+export function ProfileDetails() {
   const [isEditing, setIsEditing] = useState(false);
-  const updateUser = useMutation(api.users.updateUser);
+  const updateUser = useMutation(api.profiles.updateProfile);
+  const { data: profile } = useConvexQuery(api.profiles.getProfile);
 
   const form = useAppForm({
     defaultValues: {
-      name: user.name || '',
+      name: profile?.name || '',
     },
     validators: {
       onChange: z.object({
@@ -65,7 +66,7 @@ export function ProfileDetails({ user }: { user: User }) {
       ) : (
         <div className="flex flex-col gap-2">
           <Label>Name</Label>
-          <p className="text-muted-foreground">{user.name}</p>
+          <p className="text-muted-foreground">{profile?.name}</p>
           <Button className="mt-4" variant="outline" onClick={() => setIsEditing(true)}>
             Edit
           </Button>

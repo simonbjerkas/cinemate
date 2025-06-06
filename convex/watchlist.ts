@@ -1,22 +1,22 @@
 import { ConvexError, v } from 'convex/values';
-import { internalMutation, internalQuery, mutation, query } from './_generated/server';
-import { getAuthUserId } from '@convex-dev/auth/server';
+import { internalMutation, internalQuery } from './_generated/server';
 import { Doc } from './_generated/dataModel';
 import { internal } from './_generated/api';
+import { authenticatedMutation, authenticatedQuery } from './util';
 
 export const getOrCreateWatchlist = internalMutation({
   args: {
-    userId: v.id('users'),
+    profileId: v.id('profiles'),
   },
   handler: async (ctx, args): Promise<Doc<'watchlist'>> => {
     const watchlist = await ctx.db
       .query('watchlist')
-      .withIndex('by_user_id', q => q.eq('user_id', args.userId))
+      .withIndex('by_profile_id', q => q.eq('profile_id', args.profileId))
       .unique();
 
     if (!watchlist) {
       const newWatchlist = await ctx.db.insert('watchlist', {
-        user_id: args.userId,
+        profile_id: args.profileId,
         updated_at: Date.now().toString(),
       });
       const insertedWatchlist = await ctx.db.get(newWatchlist);
@@ -48,7 +48,7 @@ export const isMovieInWatchlist = internalQuery({
   },
 });
 
-export const add = mutation({
+export const add = authenticatedMutation({
   args: {
     title: v.string(),
     poster_path: v.optional(v.string()),
@@ -56,14 +56,9 @@ export const add = mutation({
     external_id: v.number(),
   },
   handler: async (ctx, args): Promise<Doc<'watchlist_items'>> => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new ConvexError('User not authenticated');
-    }
-
     const [watchlist, movie] = await Promise.all([
       ctx.runMutation(internal.watchlist.getOrCreateWatchlist, {
-        userId,
+        profileId: ctx.profile._id,
       }),
       ctx.runMutation(internal.movies.getOrAddMovie, {
         movie: {
@@ -97,16 +92,11 @@ export const add = mutation({
   },
 });
 
-export const inWatchlist = query({
+export const inWatchlist = authenticatedQuery({
   args: {
     externalId: v.number(),
   },
   handler: async (ctx, args): Promise<boolean> => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      return false;
-    }
-
     const [movie, watchlist] = await Promise.all([
       ctx.db
         .query('movies')
@@ -114,7 +104,7 @@ export const inWatchlist = query({
         .unique(),
       ctx.db
         .query('watchlist')
-        .withIndex('by_user_id', q => q.eq('user_id', userId))
+        .withIndex('by_profile_id', q => q.eq('profile_id', ctx.profile._id))
         .unique(),
     ]);
 
@@ -130,16 +120,11 @@ export const inWatchlist = query({
   },
 });
 
-export const remove = mutation({
+export const remove = authenticatedMutation({
   args: {
     externalId: v.number(),
   },
   handler: async (ctx, args): Promise<void> => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new ConvexError('User not authenticated');
-    }
-
     const [movie, watchlist] = await Promise.all([
       ctx.db
         .query('movies')
@@ -147,7 +132,7 @@ export const remove = mutation({
         .unique(),
       ctx.db
         .query('watchlist')
-        .withIndex('by_user_id', q => q.eq('user_id', userId))
+        .withIndex('by_profile_id', q => q.eq('profile_id', ctx.profile._id))
         .unique(),
     ]);
 
@@ -178,17 +163,12 @@ export const cleanupWatchlist = internalMutation({
   },
 });
 
-export const getWatchlist = query({
+export const getWatchlist = authenticatedQuery({
   args: {},
   handler: async (ctx): Promise<Doc<'movies'>[]> => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new ConvexError('User not authenticated');
-    }
-
     const watchlist = await ctx.db
       .query('watchlist')
-      .withIndex('by_user_id', q => q.eq('user_id', userId))
+      .withIndex('by_profile_id', q => q.eq('profile_id', ctx.profile._id))
       .unique();
 
     if (!watchlist) {

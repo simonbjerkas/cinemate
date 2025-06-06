@@ -6,14 +6,14 @@ import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 import { api } from '@/convex/_generated/api';
-import { useQuery } from 'convex/react';
 import { EditAction } from './_actions/edit';
+import { useConvexQuery } from '@/hooks/convex';
 
 export function MovieActivity({ movieId, movieTitle }: { movieId: number; movieTitle: string }) {
-  const activity = useQuery(api.entries.entriesByMovieAndUser, {
+  const { data: profile } = useConvexQuery(api.profiles.getProfile);
+  const { data: activity } = useConvexQuery(api.entries.entriesByMovieAndProfile, {
     external_id: movieId,
   });
-  const user = useQuery(api.users.getUser);
 
   if (!activity) {
     return null;
@@ -37,10 +37,9 @@ export function MovieActivity({ movieId, movieTitle }: { movieId: number; movieT
                   </p>
                   <EditorDiv>{activity[0].review}</EditorDiv>
                 </div>
-                {user?._id === activity[0].user_id ? (
+                {profile?._id === activity[0].profile_id ? (
                   <EditAction
                     entry={activity[0]}
-                    userId={user._id}
                     movieTitle={movieTitle}
                     defaultValues={{ rating: activity[0].rating || 0, review: activity[0].review || '' }}
                   />
@@ -65,10 +64,9 @@ export function MovieActivity({ movieId, movieTitle }: { movieId: number; movieT
                               </p>
                               <EditorDiv>{entry.review}</EditorDiv>
                             </div>
-                            {user?._id === entry.user_id ? (
+                            {profile?._id === entry.profile_id ? (
                               <EditAction
                                 entry={entry}
-                                userId={user._id}
                                 movieTitle={movieTitle}
                                 defaultValues={{ rating: entry.rating || 0, review: entry.review || '' }}
                               />

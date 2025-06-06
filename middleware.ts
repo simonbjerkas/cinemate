@@ -1,23 +1,7 @@
-import {
-  convexAuthNextjsMiddleware,
-  createRouteMatcher,
-  nextjsMiddlewareRedirect,
-} from '@convex-dev/auth/nextjs/server';
+import { authkitMiddleware } from '@workos-inc/authkit-nextjs';
 
-const isSignInPage = createRouteMatcher(['/signin']);
-const isProtectedRoute = createRouteMatcher(['/watchlist', '/entries', '/profile']);
+export default authkitMiddleware();
 
-export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
-  if (isSignInPage(request) && (await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, '/');
-  }
-  if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
-    return nextjsMiddlewareRedirect(request, '/signin');
-  }
-});
-
-export const config = {
-  // The following matcher runs middleware on all routes
-  // except static assets.
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
-};
+// Match against pages that require authentication
+// Leave this out if you want authentication on every page in your application
+export const config = { matcher: ['/'] };

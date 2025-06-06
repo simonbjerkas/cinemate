@@ -12,7 +12,7 @@ import { Providers } from './providers';
 import { cn } from '@/lib/utils';
 
 import type { Metadata } from 'next';
-import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
+import { AuthKitProvider } from '@workos-inc/authkit-nextjs/components';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,9 +38,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ConvexAuthNextjsServerProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={cn(geistSans.variable, geistMono.variable, 'antialiased')}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(geistSans.variable, geistMono.variable, 'antialiased')}>
+        <AuthKitProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ConvexClientProvider>
               <Providers>
@@ -55,8 +55,8 @@ export default function RootLayout({
               <CookieConsent />
             </ConvexClientProvider>
           </ThemeProvider>
-        </body>
-      </html>
-    </ConvexAuthNextjsServerProvider>
+        </AuthKitProvider>
+      </body>
+    </html>
   );
 }

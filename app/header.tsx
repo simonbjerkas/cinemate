@@ -28,10 +28,9 @@ import { X as CrossIcon, Menu as HamburgerMenuIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useScreen } from '@/hooks/screen';
 import { useEffect, useState } from 'react';
-
-import { api } from '@/convex/_generated/api';
-import { useConvexAuth, useQuery } from 'convex/react';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@workos-inc/authkit-nextjs/components';
+
 import Link from 'next/link';
 
 export function Header() {
@@ -54,54 +53,53 @@ export function Header() {
 }
 
 function Profile() {
-  const { isAuthenticated } = useConvexAuth();
-  const user = useQuery(api.users.getUser);
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <Skeleton className="size-9 rounded-full" />;
+  }
 
   return (
-    <div>
-      {isAuthenticated ? (
-        user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="size-9 rounded-full">
-                <Avatar>
-                  <AvatarImage src={user.image} />
-                  <AvatarFallback>
-                    {user.name
-                      ?.split(' ')
-                      .map(name => name[0])
-                      .join('')}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/profile">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/lists">My Lists</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/watchlist">Watchlist</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <div className="my-2 flex justify-center">
-                <SignOutButton />
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <Skeleton className="size-9 rounded-full" />
-        )
+    <>
+      {user ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="size-9 rounded-full">
+              <Avatar>
+                <AvatarImage src={user.profilePictureUrl || ''} />
+                <AvatarFallback>
+                  {user.firstName?.[0] || ''}
+                  {user.lastName?.[0] || ''}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>
+              {user.firstName} {user.lastName}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/profile">Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/lists">My Lists</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/watchlist">Watchlist</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <div className="my-2 flex justify-center">
+              <SignOutButton />
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
         <div className="ml-2 hidden md:block">
           <SignInButton />
         </div>
       )}
-    </div>
+    </>
   );
 }
 
@@ -150,7 +148,7 @@ function Navbar() {
 function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const { isAuthenticated } = useConvexAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     if (isOpen) {
@@ -201,7 +199,7 @@ function MobileNavbar() {
                   </Link>
                 </NavigationMenuItem>
               ))}
-              {!isAuthenticated && (
+              {!user && !loading && (
                 <NavigationMenuItem asChild className="w-80">
                   <SignInButton className="w-full" />
                 </NavigationMenuItem>
